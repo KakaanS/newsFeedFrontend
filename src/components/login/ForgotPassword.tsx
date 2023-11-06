@@ -20,6 +20,27 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ show, setShow }) => {
     const userData = {
       email,
     };
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/identity/requestPasswordReset",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Password reset email sent", data.message);
+      } else {
+        const errorData = await response.json();
+        console.error("Password reset request failed:", errorData.message);
+      }
+    } catch (error) {
+      console.error(error, "Something went wrong");
+    }
   };
 
   return (
