@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import ForgotPassword from "./ForgotPassword";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,26 +32,37 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleForgotPasswordClick = () => {
+    setShowForgotPassword(true);
+  };
+
   return (
-    <form onSubmit={handleLogin}>
-      <label>
-        Email:
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <button type="submit">Login</button>
-    </form>
+    <div>
+      <form onSubmit={handleLogin}>
+        <label>
+          Email:
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+        <label>
+          Password:
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
+        <button type="submit">Login</button>
+      </form>
+      <button onClick={handleForgotPasswordClick}>Forgot Password</button>
+      <ForgotPassword
+        show={showForgotPassword}
+        setShow={setShowForgotPassword}
+      />
+    </div>
   );
 };
 
