@@ -1,16 +1,26 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const AuthContext = createContext();
 
 interface AccessToken {
   expires: string;
 }
+interface LoginData {
+  accessToken: AccessToken;
+  refreshToken: string;
+}
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState<AccessToken | null>(null);
-  const [refreshToken, setRefreshToken] = useState(null);
+  const [accessToken, setAccessToken] = useState<AccessToken | null>(null); // needs to be AccessToken to handle ".expires" in isAccessTokenExpired
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
-  const login = (data) => {
+  const login = (data: LoginData) => {
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
   };
@@ -22,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const isAccessTokenExpired =
-      accessToken && new Date(accessToken.expires) < new Date();
+      accessToken && new Date(accessToken.expires) <= new Date();
 
     if (isAccessTokenExpired) {
       fetch("http://localhost:3000/api/identity/refresh", {
