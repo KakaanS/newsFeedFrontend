@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
-      username,
+      email,
       password,
     };
 
@@ -33,11 +33,11 @@ const Login: React.FC = () => {
   return (
     <form onSubmit={handleLogin}>
       <label>
-        Username:
+        Email:
         <input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </label>
       <label>
