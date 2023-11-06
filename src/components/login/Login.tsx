@@ -3,13 +3,17 @@ import React, { useState } from "react";
 
 //Utils
 import ForgotPassword from "./ForgotPassword";
-import { useAuth } from "../../context/AuthCtx";
+import { useAuth, LoginData } from "../../context/AuthCtx";
+
+interface AuthContextType {
+  login: (data: LoginData) => void;
+}
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const { login } = useAuth();
+  const { login } = useAuth() as AuthContextType;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
