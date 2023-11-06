@@ -1,10 +1,15 @@
+// Tools
 import React, { useState } from "react";
+
+//Utils
 import ForgotPassword from "./ForgotPassword";
+import { useAuth } from "../../context/AuthCtx";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +28,7 @@ const Login: React.FC = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        login(data);
         console.log("login successful", data);
       } else {
         console.error("login failed");
