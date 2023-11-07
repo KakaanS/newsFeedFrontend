@@ -101,6 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (refreshToken === null) {
+      if (location.pathname === "/register") return;
       navigate("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
