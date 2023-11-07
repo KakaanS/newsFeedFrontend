@@ -1,15 +1,13 @@
 import { createContext, useContext, useEffect, ReactNode } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import api from "../middleware/api";
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
 }
 interface AuthContextType {
-  accessToken: string | null;
-  refreshToken: string | null;
   login: (data: LoginData) => void;
   logout: () => void;
 }
@@ -21,9 +19,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "accessToken",
     "refreshToken",
   ]);
-
-  const accessToken = cookies.accessToken || null;
-  const refreshToken = cookies.refreshToken || null;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,12 +35,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate("/login");
   };
 
-  axios.interceptors.response.use(
+  api.interceptors.response.use(
     (response) => {
       return response;
     },
     (error) => {
-      if (error.response.status === 401) {
+      if (!cookies.refreshToken) {
+        logout();
+      } else if (error.response.status === 401) {
         const responseData = error.response.data;
         if (responseData.error === "Token not authorized") {
           handleRefreshToken();
@@ -56,11 +53,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const handleRefreshToken = async () => {
-    if (refreshToken !== null) {
+    if (cookies.refreshToken) {
       try {
         const response = await api.get("/identity/refresh", {
           headers: {
-            Authorization: "Bearer " + refreshToken,
+            Authorization: "Bearer " + cookies.refreshToken,
           },
         });
 
@@ -71,27 +68,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           throw new Error("Failed to refresh token");
         }
       } catch (error) {
-        console.error("Token refresh failed: ", error);
-        logout();
+        if ((error as AxiosError)?.response?.status === 401) {
+          logout();
+          return;
+        }
+        console.error(error);
       }
+    } else {
+      logout();
     }
   };
 
   useEffect(() => {
     const notAuthenticated = async () => {
+      if (!cookies.accessToken && !cookies.refreshToken) return;
       try {
         const response = await api.get("/identity/verifyToken", {
           headers: {
-            Authorization: "Bearer " + accessToken,
+            Authorization: "Bearer " + cookies.accessToken,
           },
         });
 
         if (response.status === 200) {
           console.log("Token is valid");
           return true;
-        } else if (response.status === 401) {
-          removeCookie("accessToken");
-          handleRefreshToken();
         } else {
           logout();
           throw new Error("Token is not valid");
@@ -104,20 +104,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     notAuthenticated();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, location.pathname, accessToken]);
+  }, [navigate, location.pathname]);
 
   useEffect(() => {
-    if (refreshToken === null) {
+    if (!cookies.refreshToken) {
       removeCookie("accessToken");
       if (location.pathname === "/register") return;
       navigate("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, location.pathname, refreshToken]);
+  }, [navigate, location.pathname, cookies.accessToken, cookies.refreshToken]);
 
   const value = {
-    accessToken,
-    refreshToken,
     login,
     logout,
   };
