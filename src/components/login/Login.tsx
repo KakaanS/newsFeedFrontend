@@ -1,10 +1,19 @@
+// Tools
 import React, { useState } from "react";
+
+//Utils
 import ForgotPassword from "./ForgotPassword";
+import { useAuth, LoginData } from "../../context/AuthCtx";
+
+interface AuthContextType {
+  login: (data: LoginData) => void;
+}
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const { login } = useAuth() as AuthContextType;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +32,7 @@ const Login: React.FC = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        login(data);
         console.log("login successful", data);
       } else {
         console.error("login failed");
