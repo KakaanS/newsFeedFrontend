@@ -5,16 +5,15 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { useCookies } from "react-cookie";
+import { useLocation, useNavigate } from "react-router-dom";
 
-interface AccessToken {
-  expires: string;
-}
 export interface LoginData {
-  accessToken: AccessToken;
+  accessToken: string;
   refreshToken: string;
 }
 interface AuthContextType {
-  accessToken: AccessToken | null;
+  accessToken: string | null;
   refreshToken: string | null;
   login: (data: LoginData) => void;
   logout: () => void;
@@ -23,25 +22,69 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [accessToken, setAccessToken] = useState<AccessToken | null>(null); // needs to be AccessToken to handle ".expires" in isAccessTokenExpired
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "accessToken",
+    "refreshToken",
+  ]);
+
+  const [accessToken, setAccessToken] = useState<string | null>(
+    cookies.accessToken || null,
+  );
+  const [refreshToken, setRefreshToken] = useState<string | null>(
+    cookies.refreshToken || null,
+  );
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const login = (data: LoginData) => {
     console.log("login successful", data);
+    setCookie("accessToken", data.accessToken);
+    setCookie("refreshToken", data.refreshToken);
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
+
+    navigate("/");
   };
 
   const logout = () => {
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
     setAccessToken(null);
     setRefreshToken(null);
+    navigate("/login");
   };
 
+  //USE EFFECT TO CHECK IF TOKEN IS VALID
   useEffect(() => {
-    const isAccessTokenExpired =
-      accessToken && new Date(accessToken.expires) <= new Date();
+    console.log("USE EFFECT TO CHECK IF TOKEN IS VALID");
+    const notAuthenticated = () => {
+      fetch("http://localhost:3000/api/identity/verifyToken", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return true;
+          } else {
+            setAccessToken(null);
+          }
+        })
+        .catch((error) => {
+          console.error("Token is not valid: ", error);
+          setAccessToken(null);
+        });
+    };
 
-    if (isAccessTokenExpired) {
+    notAuthenticated();
+  }, [navigate, location, accessToken]);
+
+  //USE EFFECT TO REFRESH TOKEN
+  useEffect(() => {
+    console.log("USE EFFECT TO REFRESH TOKEN");
+    if (accessToken === null) {
       fetch("http://localhost:3000/api/identity/refresh", {
         method: "GET",
         headers: {
@@ -52,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (response.ok) {
             return response.json();
           } else {
+            logout();
             throw new Error("Failed to refresh token");
           }
         })
@@ -63,7 +107,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           logout();
         });
     }
-  }, [accessToken, refreshToken]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
 
   const value = {
     accessToken,
