@@ -1,16 +1,15 @@
 import React from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
-import ArticleComponent from "./newsFeed";
+import ArticleList from "./ArticleList";
 
 interface HomeProps {
   logout: () => void;
 }
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const navigate = useNavigate();
-
 const Home: React.FC<HomeProps> = ({ logout }) => {
+  const navigate = useNavigate();
+
   const navigateHome = () => {
     navigate("/");
   };
@@ -38,7 +37,7 @@ const Home: React.FC<HomeProps> = ({ logout }) => {
         </button>
       </div>
       <div className="newsfeed">
-        <ArticleComponent article={undefined} />
+        <ArticleList />
       </div>
     </div>
   );

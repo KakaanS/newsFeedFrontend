@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Article {
+  id: string;
   title: string;
   link: string;
   content: string;
@@ -18,9 +19,42 @@ const ArticleComponent: React.FC<Props> = ({ article }) => {
       <h2>{article.title}</h2>
       <p>{article.content}</p>
       <a href={article.link}>Watch on YouTube</a>
-      <p>{article.createdAt.toLocaleString()}</p>
+      <p>{article.createdAt && <p>{article.createdAt.toLocaleString()}</p>}</p>
     </div>
   );
 };
 
-export default ArticleComponent;
+const ArticleList: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken"))
+      ?.split("=")[1];
+
+    const config = {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    };
+    axios
+      .get("http://localhost:3000/api/news/getAll", config)
+      .then((response) => {
+        setArticles(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching articles", error);
+      });
+  }, []);
+
+  return (
+    <div>
+      {articles.map((article) => (
+        <ArticleComponent key={article.id} article={article} />
+      ))}
+    </div>
+  );
+};
+
+export default ArticleList;
