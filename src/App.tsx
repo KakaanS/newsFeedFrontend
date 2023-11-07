@@ -9,10 +9,10 @@ import PageRegister from "./pages/PageRegister";
 function App() {
   return (
     <Routes>
+      <Route path="/register" element={<PageRegister />} />
       <Route path="/login" element={<PageLogin />} />
       <Route path="/" element={<PageHome />} />
       <Route path="*" element={<Navigate to="/login" />} />
-      <Route path="/register" element={<PageRegister />} />
     </Routes>
   );
 }
