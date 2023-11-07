@@ -1,5 +1,17 @@
+import { useAuth } from "../context/AuthCtx";
+
+interface AuthContextType {
+  logout: () => void;
+}
+
 const PageHome = () => {
-  return <div>PageHome</div>;
+  const { logout } = useAuth() as AuthContextType;
+  return (
+    <>
+      <div>PageHome</div>
+      <button onClick={logout}>Logout</button>
+    </>
+  );
 };
 
 export default PageHome;

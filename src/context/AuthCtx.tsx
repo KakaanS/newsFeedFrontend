@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, ReactNode } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -27,37 +21,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "refreshToken",
   ]);
 
-  const [accessToken, setAccessToken] = useState<string | null>(
-    cookies.accessToken || null,
-  );
-  const [refreshToken, setRefreshToken] = useState<string | null>(
-    cookies.refreshToken || null,
-  );
+  const accessToken = cookies.accessToken || null;
+  const refreshToken = cookies.refreshToken || null;
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const login = (data: LoginData) => {
-    console.log("login successful", data);
     setCookie("accessToken", data.accessToken);
     setCookie("refreshToken", data.refreshToken);
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-
     navigate("/");
   };
 
   const logout = () => {
-    removeCookie("accessToken");
     removeCookie("refreshToken");
-    setAccessToken(null);
-    setRefreshToken(null);
+    removeCookie("accessToken");
     navigate("/login");
+  };
+
+  const handleRefreshToken = () => {
+    if (refreshToken !== null) {
+      fetch("http://localhost:3000/api/identity/refresh", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + refreshToken,
+        },
+      })
+        .then((response) => {
+          console.log("response", response);
+          if (response.ok) {
+            return response.json();
+          } else {
+            logout();
+            throw new Error("Failed to refresh token");
+          }
+        })
+        .then((data) => {
+          console.log("data", data);
+          setCookie("accessToken", data.accessToken);
+        })
+        .catch((error) => {
+          console.error("Token refresh failed: ", error);
+          logout();
+        });
+    }
   };
 
   //USE EFFECT TO CHECK IF TOKEN IS VALID
   useEffect(() => {
     console.log("USE EFFECT TO CHECK IF TOKEN IS VALID");
+
     const notAuthenticated = () => {
       fetch("http://localhost:3000/api/identity/verifyToken", {
         method: "GET",
@@ -68,48 +81,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .then((response) => {
           if (response.ok) {
             return true;
+          } else if (response.status === 401) {
+            removeCookie("accessToken");
+            handleRefreshToken();
           } else {
-            setAccessToken(null);
+            logout();
+            throw new Error("Token is not valid");
           }
         })
         .catch((error) => {
-          console.error("Token is not valid: ", error);
-          setAccessToken(null);
+          console.error("Something went wrong", error);
+          logout();
         });
     };
 
     notAuthenticated();
-  }, [navigate, location, accessToken]);
-
-  //USE EFFECT TO REFRESH TOKEN
-  useEffect(() => {
-    console.log("USE EFFECT TO REFRESH TOKEN");
-    if (accessToken === null) {
-      fetch("http://localhost:3000/api/identity/refresh", {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + refreshToken,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            logout();
-            throw new Error("Failed to refresh token");
-          }
-        })
-        .then((data) => {
-          setAccessToken(data.accessToken);
-        })
-        .catch((error) => {
-          console.error("Token refresh failed: ", error);
-          logout();
-        });
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [navigate, location.pathname, accessToken]);
+
+  useEffect(() => {
+    if (refreshToken === null) {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, location.pathname]);
 
   const value = {
     accessToken,
