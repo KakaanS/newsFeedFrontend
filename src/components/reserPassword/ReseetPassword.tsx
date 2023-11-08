@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import checkPassword from "../../functions/passwordCheck";
+import checkPassword from "../../utils/passwordCheck";
 
 interface ResetPasswordProps {
   //setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;

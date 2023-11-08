@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import checkPassword from "../../functions/passwordCheck";
+import checkPassword from "../../utils/passwordCheck";
 interface RegisterProps {
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
   registerToken: string | null;
