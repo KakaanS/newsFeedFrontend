@@ -1,6 +1,8 @@
 // Tools
 import React, { useState } from "react";
 
+import api from "../../middleware/api";
+
 //Utils
 import ForgotPassword from "./ForgotPassword";
 import { useAuth, LoginData } from "../../context/AuthCtx";
@@ -23,17 +25,9 @@ const Login: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/identity/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      if (response.ok) {
-        const data = await response.json();
+      const { data, status } = await api.post("/identity/login", userData);
+      if (status === 200) {
         login(data);
-        console.log("login successful", data);
       } else {
         console.error("login failed");
       }
