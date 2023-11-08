@@ -1,26 +1,34 @@
 //Tools
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 //Content
 import { useAuth } from "../context/AuthCtx";
 import AddArticle from "../components/admin/AddArticle";
+import { useLocationContext } from "../context/LocationCtx";
+
+interface LocationContextType {
+  adminView: string;
+  updateAdminView: (view: string) => void;
+}
 
 const PageAdmin = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { role } = useAuth() as any;
-  const [adminView, setAdminView] = useState("Admin Panel");
   const location = useLocation();
+  const { adminView, updateAdminView } =
+    useLocationContext() as LocationContextType;
 
   const searchParams = new URLSearchParams(location.search);
   const adminviewParam = searchParams.get("adminview");
 
   useEffect(() => {
     if (adminviewParam === "addnewarticle") {
-      setAdminView("Add New Article");
+      updateAdminView("Add New Article");
     } else {
-      setAdminView("Admin Panel");
+      updateAdminView("Admin Panel");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminviewParam]);
 
   switch (adminView) {
@@ -31,7 +39,7 @@ const PageAdmin = () => {
         </div>
       );
     case "Add New Article":
-      return <AddArticle setAdminView={setAdminView} />;
+      return <AddArticle />;
     default:
       return <p>Something went wrong</p>;
   }

@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import api from "../../middleware/api";
+import { useLocationContext } from "../../context/LocationCtx";
 
-interface AddArticleProps {
-  setAdminView: (view: string) => void;
+interface LocationContextType {
+  adminView: string;
+  updateAdminView: (view: string) => void;
 }
 
-const AddArticle: React.FC<AddArticleProps> = ({ setAdminView }) => {
+const AddArticle: React.FC = () => {
   const [formData, setFormData] = useState({
     title: "",
     link: "",
     content: "",
   });
+  const { updateAdminView } = useLocationContext() as LocationContextType;
 
   const accessToken = document.cookie
     .split("; ")
     .find((cookie) => cookie.startsWith("accessToken="))
     ?.split("=")[1];
-
-  setAdminView("Add New Article");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,7 +42,7 @@ const AddArticle: React.FC<AddArticleProps> = ({ setAdminView }) => {
       const response = await api.post("/news/create", formData, { headers });
       console.log("API RESPONSE", response);
       if (response.status === 201) {
-        setAdminView("Admin Panel");
+        updateAdminView("Admin Panel");
       } else {
         console.log(response);
       }
@@ -76,7 +77,7 @@ const AddArticle: React.FC<AddArticleProps> = ({ setAdminView }) => {
           onChange={handleChange}
         />
         <button type="submit">Add new article</button>
-        <button type="button" onClick={() => setAdminView("Admin Panel")}>
+        <button type="button" onClick={() => updateAdminView("Admin Panel")}>
           Cancel
         </button>
       </form>
