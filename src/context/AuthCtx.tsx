@@ -14,10 +14,7 @@ export interface LoginData {
   accessToken: string;
   refreshToken: string;
 }
-
 interface AuthContextType {
-  accessToken: string | null;
-  refreshToken: string | null;
   login: (data: LoginData) => void;
   logout: () => void;
 }
@@ -135,8 +132,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     logout,
     role,
-    accessToken: cookies.accessToken,
-    refreshToken: cookies.refreshToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
