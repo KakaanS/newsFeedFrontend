@@ -125,7 +125,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     if (!cookies.refreshToken) {
       removeCookie("accessToken");
-      if (location.pathname === "/register") return;
+      if (
+        location.pathname === "/register" ||
+        location.pathname === "/resetPassword"
+      ) {
+        return;
+      }
       navigate("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
