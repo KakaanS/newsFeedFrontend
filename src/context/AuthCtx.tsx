@@ -1,8 +1,15 @@
-import { createContext, useContext, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+  useState,
+} from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import api from "../middleware/api";
+import { getRoleFromToken } from "../utils/jwtUtils";
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
@@ -19,6 +26,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "accessToken",
     "refreshToken",
   ]);
+  const [role, setRole] = useState<string | null>(
+    getRoleFromToken(cookies.accessToken),
+  );
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,11 +37,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("accessToken", data.accessToken);
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
+    setRole(getRoleFromToken(data.accessToken));
   };
 
   const logout = () => {
     removeCookie("refreshToken");
     removeCookie("accessToken");
+    setRole(null);
     navigate("/login");
   };
 
@@ -80,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const notAuthenticated = async () => {
+    const handleAccessToken = async () => {
       if (!cookies.accessToken && !cookies.refreshToken) return;
       try {
         const response = await api.get("/identity/verifyToken", {
@@ -91,6 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (response.status === 200) {
           console.log("Token is valid");
+          setRole(getRoleFromToken(cookies.accessToken));
           return true;
         } else {
           logout();
@@ -102,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    notAuthenticated();
+    handleAccessToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, location.pathname]);
 
@@ -123,6 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     login,
     logout,
+    role,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
