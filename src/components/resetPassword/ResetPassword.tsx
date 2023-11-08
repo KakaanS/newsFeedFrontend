@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
+import api from "../../middleware/api";
 
 interface ResetPasswordProps {
   setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;
@@ -28,19 +29,15 @@ const ReseetPassword: React.FC<ResetPasswordProps> = ({
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/identity/resetPassword",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${resetPasswordToken}`,
-          },
-          body: JSON.stringify(userData),
+      const response = await api.put("/identity/resetPassword", userData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resetPasswordToken}`,
         },
-      );
-      if (response.ok) {
-        const data = await response.json();
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
         console.log("Password Reset", data);
         setResetPasswordView("Password Reset Succeeded");
       } else {

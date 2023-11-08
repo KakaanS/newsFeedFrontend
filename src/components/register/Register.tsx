@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
+import api from "../../middleware/api";
 interface RegisterProps {
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
   registerToken: string | null;
@@ -29,19 +30,15 @@ const Register: React.FC<RegisterProps> = ({
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/identity/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${registerToken}`,
-          },
-          body: JSON.stringify(userData),
+      const response = await api.post("/identity/register", userData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${registerToken}`,
         },
-      );
-      if (response.ok) {
-        const data = await response.json();
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
         console.log("Created user", data);
         setRegisterView("User created");
       } else {
