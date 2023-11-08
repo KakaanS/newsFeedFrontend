@@ -3,12 +3,13 @@ import { useState } from "react";
 import checkPassword from "../../utils/passwordCheck";
 
 interface ResetPasswordProps {
-  //setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;
+  setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;
   resetPasswordToken: string | null;
 }
 
 const ReseetPassword: React.FC<ResetPasswordProps> = ({
   resetPasswordToken,
+  setResetPasswordView,
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,6 +42,7 @@ const ReseetPassword: React.FC<ResetPasswordProps> = ({
       if (response.ok) {
         const data = await response.json();
         console.log("Password Reset", data);
+        setResetPasswordView("Password Reset Succeeded");
       } else {
         console.error("Reset Password failed", response);
         setShowErrorResetPassword(true);
@@ -67,6 +69,7 @@ const ReseetPassword: React.FC<ResetPasswordProps> = ({
 
   return (
     <div>
+      <h1>Reset Password</h1>
       <form onSubmit={handleResetPassword}>
         <label>
           Email:

@@ -1,9 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import ReseetPassword from "../components/reserPassword/ReseetPassword";
+import ReseetPassword from "../components/resetPassword/ResetPassword";
+import ResetPasswordTokenExpired from "../components/resetPassword/ResetPasswordTokenExpired";
+import ResetPasswordSucceeded from "../components/resetPassword/ResetPasswordSucceeded";
 
 const PageResetPassword = () => {
+  const [resetPasswordView, setResetPasswordView] = useState("resetPassword");
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,10 +32,10 @@ const PageResetPassword = () => {
         );
         if (response.ok) {
           const data = await response.json();
-          console.log("Created user", data);
+          console.log("Token valid", data);
         } else {
           console.error("Token Expired", response);
-          navigate("/login");
+          setResetPasswordView("Token Expired");
         }
       } catch (error) {
         console.error(error, "Something went wrong");
@@ -41,7 +45,31 @@ const PageResetPassword = () => {
     checkResetPasswordToken();
   }, [navigate, location.pathname, resetPasswordToken]);
 
-  return <ReseetPassword resetPasswordToken={resetPasswordToken} />;
+  switch (resetPasswordView) {
+    case "resetPassword":
+      return (
+        <ReseetPassword
+          setResetPasswordView={setResetPasswordView}
+          resetPasswordToken={resetPasswordToken}
+        />
+      );
+    case "Password Reset Succeeded":
+      return (
+        <ResetPasswordSucceeded setResetPasswordView={setResetPasswordView} />
+      );
+    case "Token Expired":
+      return (
+        <ResetPasswordTokenExpired
+          setResetPasswordView={setResetPasswordView}
+        />
+      );
+    default:
+      return (
+        <ResetPasswordTokenExpired
+          setResetPasswordView={setResetPasswordView}
+        />
+      );
+  }
 };
 
 export default PageResetPassword;
