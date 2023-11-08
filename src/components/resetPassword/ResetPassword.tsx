@@ -2,52 +2,51 @@ import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
 import api from "../../middleware/api";
-interface RegisterProps {
-  setRegisterView: React.Dispatch<React.SetStateAction<string>>;
-  registerToken: string | null;
+
+interface ResetPasswordProps {
+  setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;
+  resetPasswordToken: string | null;
 }
 
-const Register: React.FC<RegisterProps> = ({
-  registerToken,
-  setRegisterView,
+const ReseetPassword: React.FC<ResetPasswordProps> = ({
+  resetPasswordToken,
+  setResetPasswordView,
 }) => {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordStongEnough, setPasswordStongEnough] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordMatch, setPasswordMatch] = useState<undefined | boolean>(
     undefined,
   );
-  const [showErrorRegister, setShowErrorRegister] = useState(false);
+  const [showErrorResetPassword, setShowErrorResetPassword] = useState(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
       email,
-      username,
       password,
     };
 
     try {
-      const response = await api.post("/identity/register", userData, {
+      const response = await api.put("/identity/resetPassword", userData, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${registerToken}`,
+          Authorization: `Bearer ${resetPasswordToken}`,
         },
       });
 
       if (response.status === 200) {
         const data = response.data;
-        console.log("Created user", data);
-        setRegisterView("User created");
+        console.log("Password Reset", data);
+        setResetPasswordView("Password Reset Succeeded");
       } else {
-        console.error("Register failed", response);
-        setShowErrorRegister(true);
+        console.error("Reset Password failed", response);
+        setShowErrorResetPassword(true);
       }
     } catch (error) {
       console.error(error, "Something went wrong");
-      setShowErrorRegister(true);
+      setShowErrorResetPassword(true);
     }
   };
   const PasswordStrength = () => {
@@ -60,14 +59,15 @@ const Register: React.FC<RegisterProps> = ({
     else return <p>Passwords do not match</p>;
   };
 
-  const ErrorRegister = () => {
-    if (showErrorRegister) return <p>Register failed</p>;
+  const ErrorResetPassword = () => {
+    if (showErrorResetPassword) return <p>Reset password failed</p>;
     else return;
   };
 
   return (
     <div>
-      <form onSubmit={handleRegister}>
+      <h1>Reset Password</h1>
+      <form onSubmit={handleResetPassword}>
         <label>
           Email:
           <input
@@ -76,14 +76,7 @@ const Register: React.FC<RegisterProps> = ({
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
+
         <label>
           Password:
           <input
@@ -109,12 +102,12 @@ const Register: React.FC<RegisterProps> = ({
         </label>
         <PasswordMatch />
         <button type="submit" disabled={!passwordMatch}>
-          Register
+          Reset Password
         </button>
-        <ErrorRegister />
+        <ErrorResetPassword />
       </form>
     </div>
   );
 };
 
-export default Register;
+export default ReseetPassword;
