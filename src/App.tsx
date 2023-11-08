@@ -1,5 +1,5 @@
 // Tools:
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Content:
 import PageLogin from "./pages/PageLogin";
@@ -16,6 +16,7 @@ function App() {
       <Route path="/resetPassword" element={<PageResetPassword />} />
       <Route path="/" element={<PageHome />} />
       <Route path="/adminpanel" element={<PageAdmin />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 }
