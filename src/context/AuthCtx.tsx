@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import api from "../middleware/api";
-import { jwtDecode } from "jwt-decode";
+import { getRoleFromToken } from "../utils/jwtUtils";
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
@@ -21,10 +21,6 @@ interface AuthContextType {
   login: (data: LoginData) => void;
   logout: () => void;
 }
-interface DecodedToken {
-  role: string;
-  // include other properties as needed
-}
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -33,7 +29,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "accessToken",
     "refreshToken",
   ]);
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(
+    getRoleFromToken(cookies.accessToken),
+  );
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,14 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("accessToken", data.accessToken);
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
-
-    const decodedToken = jwtDecode(data.accessToken) as DecodedToken;
-    setRole(decodedToken.role);
+    setRole(getRoleFromToken(data.accessToken));
   };
 
   const logout = () => {
     removeCookie("refreshToken");
     removeCookie("accessToken");
+    setRole(null);
     navigate("/login");
   };
 
@@ -109,6 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (response.status === 200) {
           console.log("Token is valid");
+          setRole(getRoleFromToken(cookies.accessToken));
           return true;
         } else {
           logout();
@@ -137,6 +135,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     logout,
     role,
+    accessToken: cookies.accessToken,
+    refreshToken: cookies.refreshToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
