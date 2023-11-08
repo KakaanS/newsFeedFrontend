@@ -1,9 +1,9 @@
 //Tools
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthCtx";
 
 //Content
 import "./Navbar.css";
+import { useAuth } from "../../context/AuthCtx";
 
 interface NavbarProps {
   logout: () => void;

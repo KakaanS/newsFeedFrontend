@@ -1,19 +1,22 @@
 .sidebar {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 20vh;
 }
 
 .sidebarBtn {
-  width: 20vh;
+  width: 100%;
   height: 50px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding-left: 20px;
-  margin-bottom: 10px;
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;
+}
+.active-button {
+  box-shadow: 0 0 10px rgba(100, 100, 255, 0.7);
 }

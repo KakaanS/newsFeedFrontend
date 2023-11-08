@@ -6,15 +6,20 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthCtx";
 import AddArticle from "../components/admin/AddArticle";
 import { useLocationContext } from "../context/LocationCtx";
+import Navbar from "../components/navbar/Navbar";
 
 interface LocationContextType {
   adminView: string;
   updateAdminView: (view: string) => void;
 }
+interface AuthContextType {
+  logout: () => void;
+}
 
 const PageAdmin = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { role } = useAuth() as any;
+  const { logout } = useAuth() as AuthContextType;
   const location = useLocation();
   const { adminView, updateAdminView } =
     useLocationContext() as LocationContextType;
@@ -35,6 +40,7 @@ const PageAdmin = () => {
     case "Admin Panel":
       return (
         <div className="adminPageContainer">
+          <Navbar logout={logout} />
           {role === "admin" && <h1>admin components</h1>}
         </div>
       );
