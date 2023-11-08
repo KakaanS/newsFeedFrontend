@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ logout }) => {
     navigate("/adminpanel");
   };
   const navigateAddNewArticle = () => {
-    navigate("/addNewArticle");
+    navigate("/adminpanel?adminview=addnewarticle");
   };
 
   return (
