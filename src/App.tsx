@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import PageLogin from "./pages/PageLogin";
 import PageHome from "./pages/PageHome";
 import PageRegister from "./pages/PageRegister";
+import PageAdmin from "./pages/PageAdmin";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/register" element={<PageRegister />} />
       <Route path="/login" element={<PageLogin />} />
       <Route path="/" element={<PageHome />} />
+      <Route path="/adminpanel" element={<PageAdmin />} />
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
