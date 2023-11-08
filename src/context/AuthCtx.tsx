@@ -120,6 +120,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
+    if (location.pathname === "/adminpanel") {
+      if (role !== "admin") navigate("/");
+    }
     if (!cookies.refreshToken) {
       removeCookie("accessToken");
       if (

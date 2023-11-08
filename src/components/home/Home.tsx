@@ -22,10 +22,10 @@ const Home: React.FC<HomeProps> = ({ logout }) => {
   };
 
   const navigateAdmin = () => {
-    navigate("/admin");
+    navigate("/adminpanel");
   };
   const navigateAddNewArticle = () => {
-    navigate("/addNewArticle");
+    navigate("/adminpanel?adminview=addnewarticle");
   };
 
   return (

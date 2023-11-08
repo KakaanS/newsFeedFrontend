@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import PageLogin from "./pages/PageLogin";
 import PageHome from "./pages/PageHome";
 import PageRegister from "./pages/PageRegister";
+import PageAdmin from "./pages/PageAdmin";
 import PageResetPassword from "./pages/PageResetPassword";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path="/login" element={<PageLogin />} />
       <Route path="/resetPassword" element={<PageResetPassword />} />
       <Route path="/" element={<PageHome />} />
+      <Route path="/adminpanel" element={<PageAdmin />} />
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
