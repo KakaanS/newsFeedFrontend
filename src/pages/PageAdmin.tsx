@@ -18,6 +18,8 @@ const PageAdmin = () => {
   useEffect(() => {
     if (adminviewParam === "addnewarticle") {
       setAdminView("Add New Article");
+    } else {
+      setAdminView("Admin Panel");
     }
   }, [adminviewParam]);
 
