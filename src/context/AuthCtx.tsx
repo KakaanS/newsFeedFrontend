@@ -1,15 +1,29 @@
-import { createContext, useContext, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+  useState,
+} from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import api from "../middleware/api";
+import { jwtDecode } from "jwt-decode";
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
 }
+
 interface AuthContextType {
+  accessToken: string | null;
+  refreshToken: string | null;
   login: (data: LoginData) => void;
   logout: () => void;
+}
+interface DecodedToken {
+  role: string;
+  // include other properties as needed
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -19,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "accessToken",
     "refreshToken",
   ]);
+  const [role, setRole] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,6 +42,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("accessToken", data.accessToken);
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
+
+    const decodedToken = jwtDecode(data.accessToken) as DecodedToken;
+    setRole(decodedToken.role);
   };
 
   const logout = () => {
@@ -118,6 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     login,
     logout,
+    role,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
