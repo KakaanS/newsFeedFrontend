@@ -1,22 +1,3 @@
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.sidebarBtn {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-left: 20px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .newsfeed {
   display: flex;
   flex-direction: column;
@@ -25,4 +6,11 @@
 }
 .homeContainer {
   display: flex;
+}
+
+.homePageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }

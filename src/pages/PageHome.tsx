@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthCtx";
 
 //Content
 import Home from "../components/home/Home";
+import Navbar from "../components/navbar/Navbar";
+import "../components/home/Home.css";
 interface AuthContextType {
   logout: () => void;
 }
@@ -10,9 +12,10 @@ interface AuthContextType {
 const PageHome = () => {
   const { logout } = useAuth() as AuthContextType;
   return (
-    <>
-      <Home logout={logout} />
-    </>
+    <div className="homePageContainer">
+      <Navbar logout={logout} />
+      <Home />
+    </div>
   );
 };
 
