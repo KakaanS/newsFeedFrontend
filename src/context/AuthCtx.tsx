@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const notAuthenticated = async () => {
+    const handleAccessToken = async () => {
       if (!cookies.accessToken && !cookies.refreshToken) return;
       try {
         const response = await api.get("/identity/verifyToken", {
@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    notAuthenticated();
+    handleAccessToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, location.pathname]);
 

@@ -12,7 +12,8 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ logout }) => {
-  const { role } = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { role } = useAuth() as any;
   const navigate = useNavigate();
 
   console.log(role, "role");
