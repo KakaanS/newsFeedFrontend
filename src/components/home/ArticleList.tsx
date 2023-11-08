@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../middleware/api";
 
 interface Article {
   id: string;
@@ -38,8 +38,8 @@ const ArticleList: React.FC = () => {
         Authorization: "Bearer " + accessToken,
       },
     };
-    axios
-      .get("http://localhost:3000/api/news/getAll", config)
+    api
+      .get("/news/getAll", config)
       .then((response) => {
         setArticles(response.data);
       })
