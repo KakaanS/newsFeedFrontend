@@ -38,7 +38,7 @@ const InviteUsers = () => {
   };
 
   return (
-    <div className="inviteUsers">
+    <div className="inviteUsersContainer">
       <form onSubmit={handleLogin}>
         <label>
           Email:

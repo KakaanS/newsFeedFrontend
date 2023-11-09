@@ -1,18 +1,14 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 20vh;
+  width: 30vh;
 }
-
 .sidebarBtn {
-  width: 100%;
-  height: 50px;
+  width: 30vh;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   padding-left: 20px;
+  padding-right: 20px;
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;

@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   return (
     <div className="homeContainer">
       <div className="newsfeed">
-        <h1>The NewsFeed:</h1>
+        <h1 className="title">The NewsFeed:</h1>
         <ArticleList />
       </div>
     </div>

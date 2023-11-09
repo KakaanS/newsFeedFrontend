@@ -41,10 +41,12 @@ const PageAdmin = () => {
   switch (adminView) {
     case "Admin Panel":
       return (
-        <div>
+        <div className="adminPageContainer">
           <Navbar logout={logout} />
-          <div className="adminPageContainer">
-            <h1>Admin Panel</h1>
+          <div className="adminContainer">
+            <div className="titleContainer">
+              <h1>Admin Panel</h1>
+            </div>
             {role === "admin" && <InviteUsers />}
           </div>
         </div>
