@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ logout }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { role } = useAuth() as any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { adminView, currentView } = useLocationContext() as any;
+  const { currentView, setCurrentView } = useLocationContext() as any;
 
   const navigateHome = () => {
     navigate("/");
@@ -31,7 +31,10 @@ const Navbar: React.FC<NavbarProps> = ({ logout }) => {
   return (
     <div className="sidebar">
       <button
-        onClick={navigateHome}
+        onClick={() => {
+          navigateHome();
+          setCurrentView("Home");
+        }}
         className={`sidebarBtn ${
           currentView === "Home" ? "active-button" : ""
         }`}
@@ -40,7 +43,10 @@ const Navbar: React.FC<NavbarProps> = ({ logout }) => {
       </button>
       {role === "admin" && (
         <button
-          onClick={navigateAdmin}
+          onClick={() => {
+            navigateAdmin();
+            setCurrentView("Admin Panel");
+          }}
           className={`sidebarBtn ${
             currentView === "Admin Panel" ? "active-button" : ""
           }`}
@@ -50,7 +56,10 @@ const Navbar: React.FC<NavbarProps> = ({ logout }) => {
       )}
       {role === "admin" && (
         <button
-          onClick={navigateAddNewArticle}
+          onClick={() => {
+            navigateAddNewArticle();
+            setCurrentView("Add New Article");
+          }}
           className={`sidebarBtn ${
             currentView === "Add New Article" ? "active-button" : ""
           }`}

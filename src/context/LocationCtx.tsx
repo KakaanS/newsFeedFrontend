@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 const LocationContext = createContext({
   adminView: "Admin Panel",
@@ -23,25 +17,18 @@ interface LocationProviderProps {
 
 export function LocationProvider({ children }: LocationProviderProps) {
   const [adminView, setAdminView] = useState("Admin Panel");
-  const [currentView, setCurrentView] = useState("adminView");
+  const [currentView, setCurrentView] = useState("");
 
   const updateAdminView = (newView: string) => {
     setAdminView(newView);
     setCurrentView(newView);
   };
 
-  useEffect(() => {
-    const initialLocation = window.location.pathname;
-    if (initialLocation === "/") {
-      setCurrentView("Home");
-    }
-    setCurrentView(adminView);
-  }, [adminView]);
-
   const values = {
     adminView,
     updateAdminView,
     currentView,
+    setCurrentView,
   };
 
   return (
