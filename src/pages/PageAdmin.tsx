@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthCtx";
 import AddArticle from "../components/admin/AddArticle";
 import InviteUsers from "../components/admin/InviteUser";
+import EditUsers from "../components/admin/EditUsers";
 import { useLocationContext } from "../context/LocationCtx";
 
 interface LocationContextType {
@@ -38,6 +39,7 @@ const PageAdmin = () => {
         <div className="adminPageContainer">
           <h1>Admin Panel</h1>
           {role === "admin" && <InviteUsers />}
+          {role === "admin" && <EditUsers />}
         </div>
       );
     case "Add New Article":

@@ -40,8 +40,8 @@ const EditUsers = () => {
   const changeRole = async (userId: string) => {
     try {
       const response = await api.put(
-        "/users/updateRole",
-        { userId, roleToSet },
+        "/users/setRoles",
+        { userId, roleName: roleToSet },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
