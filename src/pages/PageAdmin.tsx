@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 //Content
 import { useAuth } from "../context/AuthCtx";
 import AddArticle from "../components/admin/AddArticle";
+import InviteUsers from "../components/admin/InviteUser";
 import { useLocationContext } from "../context/LocationCtx";
 import Navbar from "../components/navbar/Navbar";
 
@@ -41,7 +42,8 @@ const PageAdmin = () => {
       return (
         <div className="adminPageContainer">
           <Navbar logout={logout} />
-          {role === "admin" && <h1>admin components</h1>}
+          <h1>Admin Panel</h1>
+          {role === "admin" && <InviteUsers />}
         </div>
       );
     case "Add New Article":
