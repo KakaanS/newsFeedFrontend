@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../middleware/api";
 import { useAuth } from "../../context/AuthCtx";
+import "./admin.css";
 
 type TypeUser = {
   user_id: string;
@@ -61,7 +62,7 @@ const EditUsers = () => {
 
   const User = (user: TypeUser) => {
     return (
-      <div>
+      <div className="inviteUsersContainer">
         <p>{user.username}</p>
         <p>{user.email}</p>
         <p>{user.role_name}</p>
@@ -71,7 +72,7 @@ const EditUsers = () => {
   };
 
   return (
-    <div>
+    <div className="inviteUsersContainer">
       <h2>Edit Users</h2>
       <h4>Roletoset: {roleToSet}</h4>
 
