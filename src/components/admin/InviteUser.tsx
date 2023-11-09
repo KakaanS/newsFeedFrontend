@@ -1,6 +1,10 @@
+//Tools
 import { useState } from "react";
-import api from "../../middleware/api";
+
+//Content
+import "./admin.css";
 import { useAuth } from "../../context/AuthCtx";
+import api from "../../middleware/api";
 
 const InviteUsers = () => {
   const [email, setEmail] = useState("");
@@ -34,7 +38,7 @@ const InviteUsers = () => {
   };
 
   return (
-    <div>
+    <div className="inviteUsersContainer">
       <form onSubmit={handleLogin}>
         <label>
           Email:

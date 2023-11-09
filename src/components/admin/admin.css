@@ -1,25 +1,21 @@
-.newsfeed {
-  display: flex;
-  flex-direction: column;
-}
-.homeContainer {
+.adminContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 }
-.homePageContainer {
+.adminPageContainer {
   display: flex;
   padding: 15px;
   flex-direction: row;
   margin: 20px;
 }
-.articleItem {
+.inviteUsersContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.title {
+.titleContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

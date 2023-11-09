@@ -16,7 +16,7 @@ interface Props {
 
 const ArticleComponent: React.FC<Props> = ({ article }) => {
   return (
-    <div>
+    <div className="articleItem">
       <h2>{article.title}</h2>
       <p>{article.content}</p>
       <a href={article.link}>Watch on YouTube</a>

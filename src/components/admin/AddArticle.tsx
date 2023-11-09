@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../../middleware/api";
 import { useLocationContext } from "../../context/LocationCtx";
+import { useAuth } from "../../context/AuthCtx";
 
 interface LocationContextType {
   adminView: string;
@@ -8,17 +9,13 @@ interface LocationContextType {
 }
 
 const AddArticle: React.FC = () => {
+  const { accessToken } = useAuth() as { accessToken: string };
   const [formData, setFormData] = useState({
     title: "",
     link: "",
     content: "",
   });
   const { updateAdminView } = useLocationContext() as LocationContextType;
-
-  const accessToken = document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith("accessToken="))
-    ?.split("=")[1];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

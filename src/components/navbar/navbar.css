@@ -1,0 +1,18 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 30vh;
+}
+.sidebarBtn {
+  width: 30vh;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.active-button {
+  box-shadow: 0 0 10px rgba(100, 100, 255, 0.7);
+}
