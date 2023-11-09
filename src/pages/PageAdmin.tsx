@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthCtx";
 import AddArticle from "../components/admin/AddArticle";
 import InviteUsers from "../components/admin/InviteUser";
+import EditUsers from "../components/admin/EditUsers";
 import { useLocationContext } from "../context/LocationCtx";
 import Navbar from "../components/navbar/Navbar";
 import "../components/admin/admin.css";
@@ -48,6 +49,7 @@ const PageAdmin = () => {
               <h1>Admin Panel</h1>
             </div>
             {role === "admin" && <InviteUsers />}
+            {role === "admin" && <EditUsers />}
           </div>
         </div>
       );
