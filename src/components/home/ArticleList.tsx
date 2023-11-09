@@ -18,8 +18,13 @@ const ArticleComponent: React.FC<Props> = ({ article }) => {
   return (
     <div className="articleItem">
       <h2>{article.title}</h2>
+      <iframe
+        width="700"
+        height="450"
+        src={article.link}
+        allowFullScreen
+      ></iframe>
       <p>{article.content}</p>
-      <a href={article.link}>Watch on YouTube</a>
       <p>{article.createdAt && <p>{article.createdAt.toLocaleString()}</p>}</p>
     </div>
   );
