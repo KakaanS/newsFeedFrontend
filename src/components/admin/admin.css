@@ -1,0 +1,17 @@
+.adminContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.adminPageContainer {
+  display: flex;
+  height: 100%;
+  padding: 15px;
+}
+
+.inviteUsersContainer {
+  display: flex;
+  margin: 20px;
+  align-items: center;
+  margin-top: 20px;
+}

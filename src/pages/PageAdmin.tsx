@@ -8,6 +8,7 @@ import AddArticle from "../components/admin/AddArticle";
 import InviteUsers from "../components/admin/InviteUser";
 import { useLocationContext } from "../context/LocationCtx";
 import Navbar from "../components/navbar/Navbar";
+import "../components/admin/admin.css";
 
 interface LocationContextType {
   adminView: string;
@@ -40,10 +41,12 @@ const PageAdmin = () => {
   switch (adminView) {
     case "Admin Panel":
       return (
-        <div className="adminPageContainer">
+        <div>
           <Navbar logout={logout} />
-          <h1>Admin Panel</h1>
-          {role === "admin" && <InviteUsers />}
+          <div className="adminPageContainer">
+            <h1>Admin Panel</h1>
+            {role === "admin" && <InviteUsers />}
+          </div>
         </div>
       );
     case "Add New Article":

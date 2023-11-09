@@ -2,7 +2,7 @@
 import React from "react";
 
 // Content
-import "./Home.css";
+import "./home.css";
 import ArticleList from "./ArticleList";
 import { useAuth } from "../../context/AuthCtx";
 

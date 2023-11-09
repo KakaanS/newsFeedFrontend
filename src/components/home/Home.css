@@ -9,7 +9,7 @@
 }
 .homePageContainer {
   display: flex;
-  justify-content: center; /* Center the newsfeed horizontally */
-  align-items: center; /* Center the newsfeed vertically */
-  height: 100vh; /* Ensure it takes the full height of the viewport */
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
 }

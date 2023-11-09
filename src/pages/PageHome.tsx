@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthCtx";
 //Content
 import Home from "../components/home/Home";
 import Navbar from "../components/navbar/Navbar";
-import "../components/home/Home.css";
+import "../components/home/home.css";
 interface AuthContextType {
   logout: () => void;
 }
