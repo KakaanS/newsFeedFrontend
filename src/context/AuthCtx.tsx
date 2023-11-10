@@ -52,8 +52,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setRole(null);
     navigate("/login");
   };
+  console.log(cookies.refreshToken);
+  console.log(cookies.accessToken);
 
   const handleRefreshToken = async () => {
+    console.log("COOKIES.REFRESHTOKEN:", cookies.refreshToken);
     console.log("handleRefresh");
     if (cookies.refreshToken) {
       console.log("handleREFRESH, after cookies.refreshToken has been checked");
@@ -72,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return { accessToken: accessToken };
         }
       } catch (error) {
-        if ((error as AxiosError)?.response?.status !== 401) {
+        if ((error as AxiosError)?.response?.status === 401) {
           logout();
           return;
         }
@@ -100,13 +103,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setValidToken(true);
         return true;
       } else {
-        console.log("DID THIS HAPPEN???????");
-
+        logout();
         throw new Error("Token is not valid");
       }
     } catch (error) {
       console.log("handleAccessToken: axios error triggering");
-      if ((error as AxiosError)?.response?.status !== 401) return;
+      if ((error as AxiosError)?.response?.status === 401) return;
       console.log(error);
     }
   };
@@ -121,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const response = await handleRefreshToken();
           if (response) {
             originalRequest.headers.Authorization =
-              "Bearer " + response.accessToken;
+              "Bearer " + cookies.accessToken;
 
             return api(originalRequest);
           }
@@ -135,10 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     handleAccessToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, location.pathname]);
-
-  useEffect(() => {
+    console.log("useEffectL", handleAccessToken());
     if (location.pathname === "/adminpanel") {
       if (role !== "admin") navigate("/");
     }
