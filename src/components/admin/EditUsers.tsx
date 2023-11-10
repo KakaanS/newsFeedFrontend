@@ -41,7 +41,7 @@ const EditUsers = () => {
     };
     getUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [validToken]);
 
   const changeRole = async (userId: string) => {
     try {

@@ -9,6 +9,7 @@ import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import api from "../middleware/api";
+import openApi from "../middleware/openApi";
 import { getRoleFromToken } from "../utils/jwtUtils";
 
 export interface LoginData {
@@ -50,14 +51,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     removeCookie("refreshToken");
     removeCookie("accessToken");
     setRole(null);
+    setValidToken(false);
     navigate("/login");
   };
   console.log(cookies.refreshToken);
   console.log(cookies.accessToken);
+  console.log("role, validtoken?", role, validToken);
 
   const handleRefreshToken = async () => {
-    console.log("COOKIES.REFRESHTOKEN:", cookies.refreshToken);
-    console.log("handleRefresh");
+    console.log(
+      "COOKIES.REFRESHTOKEN, in handleResfresh: ",
+      cookies.refreshToken,
+    );
     if (cookies.refreshToken) {
       console.log("handleREFRESH, after cookies.refreshToken has been checked");
       try {
@@ -66,12 +71,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             Authorization: "Bearer " + cookies.refreshToken,
           },
         });
-        console.log("response!!!!!!!!!!!: ", response);
-        if (response.status === 200 && response.data === "New accesstoken") {
+        console.log("handleRefresh: response", response);
+        if (response.status === 200) {
           const accessToken = response.data.accessToken;
           setCookie("accessToken", accessToken);
           setValidToken(true);
-          console.log(role);
+          console.log(
+            "We should be setting accessToken and validToken here: ",
+            accessToken,
+            validToken,
+          );
           return { accessToken: accessToken };
         }
       } catch (error) {
@@ -91,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleAccessToken = async () => {
     if (!cookies.accessToken && !cookies.refreshToken) return;
     try {
-      const response = await api.get("/identity/verifyToken", {
+      const response = await openApi.get("/identity/verifyToken", {
         headers: {
           Authorization: "Bearer " + cookies.accessToken,
         },
@@ -113,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  api.interceptors.response.use(
+  openApi.interceptors.response.use(
     async (response) => response,
     async (error) => {
       const originalRequest = error.config;
@@ -123,9 +132,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const response = await handleRefreshToken();
           if (response) {
             originalRequest.headers.Authorization =
-              "Bearer " + cookies.accessToken;
+              "Bearer " + response.accessToken;
 
-            return api(originalRequest);
+            const retryResponse = await openApi(originalRequest);
+
+            setCookie("accessToken", response.accessToken);
+
+            return retryResponse;
           }
         } catch (error) {
           console.log(error);

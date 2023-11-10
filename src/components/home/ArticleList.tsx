@@ -57,7 +57,7 @@ const ArticleList: React.FC = () => {
     };
     getNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [validToken]);
 
   return (
     <div>
