@@ -32,10 +32,14 @@ const ArticleComponent: React.FC<Props> = ({ article }) => {
 
 const ArticleList: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
-  const { accessToken } = useAuth() as { accessToken: string };
+  const { accessToken, validToken } = useAuth() as {
+    accessToken: string;
+    validToken: boolean;
+  };
 
   useEffect(() => {
-    if (!accessToken) return;
+    console.log("validToken", validToken);
+    if (!validToken) return;
     const getNews = async () => {
       const config = {
         headers: {
@@ -52,6 +56,7 @@ const ArticleList: React.FC = () => {
         });
     };
     getNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   return (

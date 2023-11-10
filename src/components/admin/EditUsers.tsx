@@ -14,10 +14,14 @@ const EditUsers = () => {
   const [users, setUsers] = useState([]);
   const [roleToSet, setRoleToSet] = useState<"admin" | "user">("user");
 
-  const { accessToken } = useAuth() as { accessToken: string };
+  const { accessToken, validToken } = useAuth() as {
+    accessToken: string;
+    validToken: boolean;
+  };
 
   useEffect(() => {
     const getUsers = async () => {
+      if (!validToken) return;
       try {
         const response = await api.get("/users/getAll", {
           headers: {
@@ -36,6 +40,7 @@ const EditUsers = () => {
       }
     };
     getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   const changeRole = async (userId: string) => {
