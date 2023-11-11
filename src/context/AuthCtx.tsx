@@ -58,6 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   console.log(cookies.accessToken);
   console.log("role, validtoken?", role, validToken);
 
+  let refreshPromise = null;
+
+  const clearPromise = () => (refreshPromise = null);
+
   const handleRefreshToken = async () => {
     console.log(
       "COOKIES.REFRESHTOKEN, in handleResfresh: ",
@@ -86,9 +90,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         if ((error as AxiosError)?.response?.status === 401) {
           logout();
-          return;
         }
         console.log(error);
+        throw error;
+      } finally {
+        clearPromise();
       }
     } else {
       console.log("handleRefresh: No refresh token found");
@@ -128,18 +134,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const originalRequest = error.config;
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
+
+        if (!refreshPromise) {
+          refreshPromise = handleRefreshToken().finally(clearPromise);
+        }
+
         try {
-          const response = await handleRefreshToken();
-          if (response) {
-            originalRequest.headers.Authorization =
-              "Bearer " + response.accessToken;
+          const response = await refreshPromise;
+          console.log(response, "This is the response from refreshPromise");
 
-            const retryResponse = await openApi(originalRequest);
+          originalRequest.headers.Authorization =
+            "Bearer " + response.accessToken;
 
-            setCookie("accessToken", response.accessToken);
+          const retryResponse = await openApi(originalRequest);
 
-            return retryResponse;
-          }
+          setCookie("accessToken", response.accessToken);
+
+          return retryResponse;
         } catch (error) {
           console.log(error);
         }
