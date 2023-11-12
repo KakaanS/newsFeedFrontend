@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
-import api from "../../middleware/api";
+import openApi from "../../middleware/openApi";
 interface RegisterProps {
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
   registerToken: string | null;
@@ -30,14 +30,14 @@ const Register: React.FC<RegisterProps> = ({
     };
 
     try {
-      const response = await api.post("/identity/register", userData, {
+      const response = await openApi.post("/identity/register", userData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${registerToken}`,
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         const data = response.data;
         console.log("Created user", data);
         setRegisterView("User created");

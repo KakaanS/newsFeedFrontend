@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<string | null>(
     getRoleFromToken(getCookie("accessToken") || ""),
   );
-  //const [validToken, setValidToken] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     refreshToken: string | null,
   ): Promise<string | undefined> => {
     console.log("refreshAccessToken - Entering");
-    console.log("xx refreshToken: ", refreshToken);
+    console.log("refreshAccessToken refreshToken: ", refreshToken);
     if (refreshToken) {
       try {
         console.log("refreshAccessToken - checking");

@@ -10,7 +10,7 @@ const InviteUsers = () => {
   const [name, setName] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
       email,
@@ -31,7 +31,7 @@ const InviteUsers = () => {
 
   return (
     <div className="inviteUsersContainer">
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleInvite}>
         <label>
           Email:
           <input
