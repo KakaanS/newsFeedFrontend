@@ -3,14 +3,12 @@ import { useState } from "react";
 
 //Content
 import "./admin.css";
-import { useAuth } from "../../context/AuthCtx";
 import api from "../../middleware/api";
 
 const InviteUsers = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
-  const { accessToken } = useAuth() as { accessToken: string };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,15 +16,9 @@ const InviteUsers = () => {
       email,
       name,
     };
-    const headers = {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${accessToken}`,
-    };
 
     try {
-      const { status } = await api.post("/identity/invite", userData, {
-        headers,
-      });
+      const { status } = await api.post("/identity/invite", userData);
       if (status === 200) {
         setInvitationSent(true);
       } else {

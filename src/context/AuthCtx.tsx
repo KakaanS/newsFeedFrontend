@@ -1,41 +1,39 @@
 import {
   createContext,
   useContext,
-  useEffect,
   ReactNode,
   useState,
+  useEffect,
 } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
 import api from "../middleware/api";
-import openApi from "../middleware/openApi";
+
 import { getRoleFromToken } from "../utils/jwtUtils";
+import openApi from "../middleware/openApi";
+import { getCookie } from "../utils/cookieUtils";
 
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   login: (data: LoginData) => void;
   logout: () => void;
-  accessToken: string | null;
-  validToken: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [, setCookie, removeCookie] = useCookies([
     "accessToken",
     "refreshToken",
   ]);
   const [role, setRole] = useState<string | null>(
-    getRoleFromToken(cookies.accessToken),
+    getRoleFromToken(getCookie("accessToken") || ""),
   );
-  const [validToken, setValidToken] = useState<boolean>(false);
-
+  //const [validToken, setValidToken] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,151 +42,138 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
     setRole(getRoleFromToken(data.accessToken));
-    setValidToken(true);
   };
 
   const logout = () => {
     removeCookie("refreshToken");
     removeCookie("accessToken");
     setRole(null);
-    setValidToken(false);
     navigate("/login");
   };
-  console.log(cookies.refreshToken);
-  console.log(cookies.accessToken);
-  console.log("role, validtoken?", role, validToken);
 
-  let refreshPromise = null;
-
-  const clearPromise = () => (refreshPromise = null);
-
-  const handleRefreshToken = async () => {
-    console.log(
-      "COOKIES.REFRESHTOKEN, in handleResfresh: ",
-      cookies.refreshToken,
-    );
-    if (cookies.refreshToken) {
-      console.log("handleREFRESH, after cookies.refreshToken has been checked");
+  const refreshAccessToken = async (
+    refreshToken: string | null,
+  ): Promise<string | undefined> => {
+    console.log("refreshAccessToken - Entering");
+    console.log("xx refreshToken: ", refreshToken);
+    if (refreshToken) {
       try {
-        const response = await api.get("/identity/refresh", {
+        console.log("refreshAccessToken - checking");
+        const response = await openApi.get("/identity/refresh", {
           headers: {
-            Authorization: "Bearer " + cookies.refreshToken,
+            Authorization: "Bearer " + refreshToken,
           },
         });
-        console.log("handleRefresh: response", response);
+        console.log("refreshAccessToken - response: ", response);
+
         if (response.status === 200) {
+          console.log("refreshAccessToken - refreshToken is valid");
           const accessToken = response.data.accessToken;
           setCookie("accessToken", accessToken);
-          setValidToken(true);
-          console.log(
-            "We should be setting accessToken and validToken here: ",
-            accessToken,
-            validToken,
-          );
-          return { accessToken: accessToken };
+          navigate(location.pathname);
+          return accessToken;
         }
       } catch (error) {
-        if ((error as AxiosError)?.response?.status === 401) {
-          logout();
-        }
+        console.log(
+          "refreshAccessToken - not ok \n\t - ",
+          (error as Error)?.message,
+        );
         console.log(error);
-        throw error;
-      } finally {
-        clearPromise();
+        logout();
       }
     } else {
-      console.log("handleRefresh: No refresh token found");
-      logout();
-      return;
+      return undefined;
     }
   };
 
-  const handleAccessToken = async () => {
-    if (!cookies.accessToken && !cookies.refreshToken) return;
-    try {
-      const response = await openApi.get("/identity/verifyToken", {
-        headers: {
-          Authorization: "Bearer " + cookies.accessToken,
-        },
-      });
+  const isAccessTokenValid = async (
+    accessToken: string | null,
+  ): Promise<boolean | undefined> => {
+    console.log("isAccessTokenValid accessToken: ", accessToken);
+    if (accessToken) {
+      try {
+        console.log("isAccessTokenValid - checking");
+        const response = await openApi.get("/identity/verifyToken", {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        });
 
-      if (response.status === 200) {
-        console.log("handleAccessToken: Token is valid");
-        setRole(getRoleFromToken(cookies.accessToken));
-        setValidToken(true);
-        return true;
+        if (response.status === 200) {
+          console.log("verifyAccessToken - accessToken is valid");
+          setRole(getRoleFromToken(accessToken));
+          return true;
+        }
+      } catch (error) {
+        console.log(
+          "verifyAccessToken - not ok \n\t - ",
+          (error as Error)?.message,
+        );
+        removeCookie("accessToken");
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  let refreshTokenPromise: Promise<string | undefined> | null = null;
+  const interceptor = api.interceptors.request.use(
+    async (request) => {
+      const accessToken = getCookie("accessToken") || "";
+      const refreshToken = getCookie("refreshToken") || "";
+
+      console.log("INTERCEPTOR: requested url: ", request.url);
+      if ((await isAccessTokenValid(accessToken)) === false) {
+        console.log("INTERCEPTOR: - accessToken not valid");
+        if (refreshTokenPromise === null) {
+          console.log("INTERCEPTOR: running refreshAccessToken");
+          refreshTokenPromise = refreshAccessToken(refreshToken).finally(() => {
+            //finally resetting the promise allows subsequent requests to proceed normally
+            refreshTokenPromise = null;
+          });
+        }
+
+        const newToken = await refreshTokenPromise;
+        console.log("newToken: ", newToken);
+        request.headers.Authorization = `Bearer ${newToken}`;
       } else {
-        logout();
-        throw new Error("Token is not valid");
+        console.log("INTERCEPTOR: - accessToken valid");
+        request.headers.Authorization = `Bearer ${accessToken}`;
       }
-    } catch (error) {
-      console.log("handleAccessToken: axios error triggering");
-      if ((error as AxiosError)?.response?.status === 401) return;
-      console.log(error);
-    }
-  };
-
-  openApi.interceptors.response.use(
-    async (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-
-        if (!refreshPromise) {
-          refreshPromise = handleRefreshToken().finally(clearPromise);
-        }
-
-        try {
-          const response = await refreshPromise;
-          console.log(response, "This is the response from refreshPromise");
-
-          originalRequest.headers.Authorization =
-            "Bearer " + response.accessToken;
-
-          const retryResponse = await openApi(originalRequest);
-
-          setCookie("accessToken", response.accessToken);
-
-          return retryResponse;
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      api.interceptors.request.eject(interceptor);
+      return request;
+    },
+    (error) => {
       return Promise.reject(error);
     },
   );
 
   useEffect(() => {
-    handleAccessToken();
-    console.log("useEffectL", handleAccessToken());
     if (location.pathname === "/adminpanel") {
-      if (role !== "admin") navigate("/");
-    }
-    if (!cookies.refreshToken) {
-      removeCookie("accessToken");
-      if (
-        location.pathname === "/register" ||
-        location.pathname === "/resetPassword"
-      ) {
-        return;
+      if (role !== "admin") {
+        console.log("redirecting to /");
+        navigate("/");
       }
-      navigate("/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, location.pathname, cookies.accessToken, cookies.refreshToken]);
+  }, [navigate, location.pathname, role]);
 
-  const value = {
-    login,
-    logout,
-    role,
-    accessToken: cookies.accessToken,
-    validToken,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={
+        {
+          login,
+          logout,
+          role,
+        } as AuthContextType
+      }
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   return useContext(AuthContext);
 };

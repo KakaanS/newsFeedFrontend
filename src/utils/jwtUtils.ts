@@ -2,7 +2,6 @@ import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
   role: string;
-  // include other properties as needed
 }
 
 export const getRoleFromToken = (token: string) => {

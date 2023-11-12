@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import api from "../../middleware/api";
-import { useAuth } from "../../context/AuthCtx";
 import "./admin.css";
 
 type TypeUser = {
@@ -14,46 +13,30 @@ const EditUsers = () => {
   const [users, setUsers] = useState([]);
   const [roleToSet, setRoleToSet] = useState<"admin" | "user">("user");
 
-  const { accessToken, validToken } = useAuth() as {
-    accessToken: string;
-    validToken: boolean;
-  };
-
-  useEffect(() => {
-    const getUsers = async () => {
-      if (!validToken) return;
-      try {
-        const response = await api.get("/users/getAll", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.status === 200) {
-          const data = response.data;
-          console.log("Users", data);
-          setUsers(data);
-        } else {
-          console.error("Get Users failed", response);
-        }
-      } catch (error) {
-        console.error(error, "Something went wrong");
+  const getUsers = async () => {
+    try {
+      const response = await api.get("/users/getAll");
+      if (response.status === 200) {
+        const data = response.data;
+        setUsers(data);
+      } else {
+        console.error("Get Users failed", response);
       }
-    };
+    } catch (error) {
+      console.error(error, "Something went wrong");
+    }
+  };
+  useEffect(() => {
     getUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validToken]);
+  }, []);
 
   const changeRole = async (userId: string) => {
     try {
-      const response = await api.put(
-        "/users/setRoles",
-        { userId, roleName: roleToSet },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await api.put("/users/setRoles", {
+        userId,
+        roleName: roleToSet,
+      });
       if (response.status === 200) {
         const data = response.data;
         console.log("Role changed", data);

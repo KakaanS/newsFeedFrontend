@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import api from "../../middleware/api";
 import { useLocationContext } from "../../context/LocationCtx";
-import { useAuth } from "../../context/AuthCtx";
 
 interface LocationContextType {
   adminView: string;
@@ -9,7 +8,6 @@ interface LocationContextType {
 }
 
 const AddArticle: React.FC = () => {
-  const { accessToken } = useAuth() as { accessToken: string };
   const [formData, setFormData] = useState({
     title: "",
     link: "",
@@ -29,14 +27,7 @@ const AddArticle: React.FC = () => {
     e.preventDefault();
 
     try {
-      console.log("submitting MF");
-
-      const headers = {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      };
-
-      const response = await api.post("/news/create", formData, { headers });
+      const response = await api.post("/news/create", formData);
       console.log("API RESPONSE", response);
       if (response.status === 201) {
         updateAdminView("Admin Panel");
