@@ -52,6 +52,7 @@ const EditUsers = () => {
     const [roleToSet, setRoleToSet] = useState(user.role_name);
 
     useEffect(() => {
+      console.log(roleToSet);
       toggleRole();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -80,6 +81,7 @@ const EditUsers = () => {
             onClick={() => {
               changeRole(user.user_id, roleToSet);
               setUpdateUsers(!updateUsers);
+              toggleRole();
             }}
           >
             Save
