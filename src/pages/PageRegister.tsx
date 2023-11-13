@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Register from "../components/register/Register";
 import RegisterUserCreated from "../components/register/RegisterUserCreated";
 import RegisterTokenExpired from "../components/register/RegisterTokenExpired";
+
 const PageRegister = () => {
   const [registerView, setRegisterView] = useState("register");
 
@@ -12,7 +13,7 @@ const PageRegister = () => {
 
   const searchParams = new URLSearchParams(location.search);
   const registerTokenParam = searchParams.get("registerToken");
-  const emailParam = searchParams.get("email");
+  const emailParam = searchParams.get("email") as string;
 
   useEffect(() => {
     if (!registerTokenParam || !emailParam) {
@@ -49,6 +50,7 @@ const PageRegister = () => {
     case "register":
       return (
         <Register
+          email={emailParam}
           setRegisterView={setRegisterView}
           registerToken={registerTokenParam}
         />
