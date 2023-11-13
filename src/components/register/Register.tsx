@@ -2,16 +2,18 @@ import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
 import openApi from "../../middleware/openApi";
+
 interface RegisterProps {
+  email: string;
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
   registerToken: string | null;
 }
 
 const Register: React.FC<RegisterProps> = ({
+  email,
   registerToken,
   setRegisterView,
 }) => {
-  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordStongEnough, setPasswordStongEnough] = useState("");
@@ -24,7 +26,6 @@ const Register: React.FC<RegisterProps> = ({
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
-      email,
       username,
       password,
     };
@@ -68,14 +69,7 @@ const Register: React.FC<RegisterProps> = ({
   return (
     <div>
       <form onSubmit={handleRegister}>
-        <label>
-          Email:
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
+        <label>Email: {email}</label>
         <label>
           Username:
           <input

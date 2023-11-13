@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import api from "../../middleware/api";
 import "./admin.css";
+import User from "./User";
 
-type TypeUser = {
+export type TypeUser = {
   user_id: string;
   username: string;
   email: string;
@@ -12,6 +13,10 @@ type TypeUser = {
 const EditUsers = () => {
   const [users, setUsers] = useState([]);
   const [updateUsers, setUpdateUsers] = useState(false);
+
+  const handleUpdateUsers = () => {
+    setUpdateUsers(!updateUsers);
+  };
 
   const getUsers = async () => {
     try {
@@ -28,69 +33,10 @@ const EditUsers = () => {
   };
 
   useEffect(() => {
-    console.log("fetching users");
+    console.log("useEffect get users");
+    console.log("UpdateUsers", updateUsers);
     getUsers();
-  }, []);
-
-  const changeRole = async (userId: string, roleToSet: string) => {
-    try {
-      const response = await api.put("/users/setRoles", {
-        userId,
-        roleName: roleToSet,
-      });
-      if (response.status === 200) {
-        const data = response.data;
-        console.log("Role changed", data);
-      } else {
-        console.error("Change Role failed", response);
-      }
-    } catch (error) {
-      console.error(error, "Something went wrong");
-    }
-  };
-
-  const User = (user: TypeUser) => {
-    const [roleToSet, setRoleToSet] = useState(user.role_name);
-
-    useEffect(() => {
-      console.log(roleToSet);
-      toggleRole();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const toggleRole = () => {
-      if (roleToSet === "admin") {
-        setRoleToSet("user");
-      } else if (roleToSet === "user") {
-        setRoleToSet("admin");
-      } else {
-        setRoleToSet("user");
-      }
-    };
-
-    return (
-      <div className="users">
-        <p className="username">{user.username}</p>
-        <p className="email">{user.email}</p>
-        <p className="role">{user.role_name}</p>
-        <div className="changeRole">
-          <button onClick={toggleRole} className="buttonInUsers">
-            Change Role To {`->`} {roleToSet}
-          </button>
-          <button
-            className="buttonInUsers"
-            onClick={() => {
-              changeRole(user.user_id, roleToSet);
-              setUpdateUsers(!updateUsers);
-              toggleRole();
-            }}
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    );
-  };
+  }, [updateUsers]);
 
   return (
     <div className="editUsersContainer">
@@ -103,7 +49,11 @@ const EditUsers = () => {
         <p className="changeRole">Change Role</p>
       </div>
       {users.map((user: TypeUser) => (
-        <User key={user.user_id} {...user} />
+        <User
+          key={user.user_id}
+          user={user}
+          handleUpdateUsers={handleUpdateUsers}
+        />
       ))}
     </div>
   );
