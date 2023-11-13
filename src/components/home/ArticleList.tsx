@@ -44,6 +44,7 @@ const ArticleList: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log("fetching news");
     getNews();
   }, []);
 

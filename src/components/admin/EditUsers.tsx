@@ -31,6 +31,7 @@ const EditUsers = () => {
       console.error(error, "Something went wrong");
     }
   };
+
   useEffect(() => {
     console.log("useEffect get users");
     console.log("UpdateUsers", updateUsers);
