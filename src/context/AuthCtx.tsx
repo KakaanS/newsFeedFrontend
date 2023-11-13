@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setRole(getRoleFromToken(newToken));
               }
             })
-            .catch((err) => {
+            .catch(() => {
               logout();
             });
         }
