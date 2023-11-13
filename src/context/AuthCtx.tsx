@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("INTERCEPTOR: - accessToken valid");
         request.headers.Authorization = `Bearer ${accessToken}`;
       }
-      api.interceptors.request.eject(interceptor);
+      //api.interceptors.request.eject(interceptor);
       return request;
     },
     (error) => {
