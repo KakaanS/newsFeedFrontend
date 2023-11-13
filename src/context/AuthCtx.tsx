@@ -116,9 +116,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return false;
     }
   };
-
+  // const interceptor =
+  // ^om man vill använda eject igen
   let refreshTokenPromise: Promise<string | undefined> | null = null;
-  const interceptor = api.interceptors.request.use(
+  api.interceptors.request.use(
     async (request) => {
       const accessToken = getCookie("accessToken") || "";
       const refreshToken = getCookie("refreshToken") || "";
