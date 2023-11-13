@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           console.log("refreshAccessToken - refreshToken is valid");
           const accessToken = response.data.accessToken;
           setCookie("accessToken", accessToken);
+          setRole(getRoleFromToken(accessToken));
           navigate(location.pathname);
           return accessToken;
         }
