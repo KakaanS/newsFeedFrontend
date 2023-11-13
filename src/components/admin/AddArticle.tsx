@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../../middleware/api";
 import { useLocationContext } from "../../context/LocationCtx";
+import "./admin.css";
 
 interface LocationContextType {
   adminView: string;
@@ -40,30 +41,38 @@ const AddArticle: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Add new article for site</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-        />
-        <label htmlFor="link">Link</label>
-        <input
-          type="text"
-          name="link"
-          value={formData.link}
-          onChange={handleChange}
-        />
-        <label htmlFor="content">Content</label>
-        <input
-          type="text"
-          name="content"
-          value={formData.content}
-          onChange={handleChange}
-        />
+    <div className="editUsersContainer">
+      <h2>Add new article for site</h2>
+      <form className="inviteFormContainer" onSubmit={handleSubmit}>
+        <div className="inviteForm">
+          <label>
+            Title:
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Link:
+            <input
+              type="link"
+              name="link"
+              value={formData.link}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Content:
+            <input
+              type="text"
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
         <button type="submit">Add new article</button>
         <button type="button" onClick={() => updateAdminView("Admin Panel")}>
           Cancel
