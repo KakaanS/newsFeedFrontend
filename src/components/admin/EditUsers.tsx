@@ -3,7 +3,7 @@ import api from "../../middleware/api";
 import "./admin.css";
 import User from "./User";
 import InvitedUsers from "./InvitedUsers";
-
+import { AuthContextType, useAuth } from "../../context/AuthCtx";
 interface EditUsersProps {
   handleUpdateUsers: () => void;
 }
@@ -24,6 +24,8 @@ export type TypeInvitedUser = {
 const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
+  const { user } = useAuth() as AuthContextType;
+  const activeUserId = user?.user_id;
 
   const getUsers = async () => {
     try {
@@ -71,13 +73,19 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
           <p className="changeRole">Change Role</p>
           <p className="deleteUser">Delete</p>
         </div>
-        {users.map((user: TypeUser) => (
-          <User
-            key={user.user_id}
-            user={user}
-            handleUpdateUsers={handleUpdateUsers}
-          />
-        ))}
+        {users.map(
+          (user: TypeUser) => (
+            console.log("user", user),
+            (
+              <User
+                key={user.user_id}
+                user={user}
+                handleUpdateUsers={handleUpdateUsers}
+                activeUser={activeUserId === user.user_id}
+              />
+            )
+          ),
+        )}
       </div>
       <div className="editUsersContainer">
         <h2> Invited Users</h2>

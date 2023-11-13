@@ -5,9 +5,10 @@ import { TypeUser } from "./EditUsers";
 interface UserProps {
   user: TypeUser;
   handleUpdateUsers: () => void;
+  activeUser: boolean;
 }
 
-const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
+const User: React.FC<UserProps> = ({ user, handleUpdateUsers, activeUser }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -74,29 +75,38 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
       <p className="username">{user.username}</p>
       <p className="email">{user.email}</p>
       <p className="role">{getRoleText(false)}</p>
-      <div className="changeRole">
-        <p className="changeTo">Change To: {getRoleText(true)}</p>
-        <button
-          className="buttonInUsers"
-          onClick={() => {
-            changeRole(user.user_id, getRoleText(true));
-            handleUpdateUsers();
-          }}
-        >
-          Save
-        </button>
-      </div>
-      <div className="deleteUser">
-        <button
-          className="buttonInUsers"
-          onClick={() => {
-            deleteUser(user.user_id);
-            handleUpdateUsers();
-          }}
-        >
-          Delete
-        </button>
-      </div>
+      {activeUser ? (
+        <>
+          <div className="changeRole"></div>
+          <div className="deleteUser"></div>
+        </>
+      ) : (
+        <>
+          <div className="changeRole">
+            <p className="changeTo">Change To: {getRoleText(true)}</p>
+            <button
+              className="buttonInUsers"
+              onClick={() => {
+                changeRole(user.user_id, getRoleText(true));
+                handleUpdateUsers();
+              }}
+            >
+              Save
+            </button>
+          </div>
+          <div className="deleteUser">
+            <button
+              className="buttonInUsers"
+              onClick={() => {
+                deleteUser(user.user_id);
+                handleUpdateUsers();
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

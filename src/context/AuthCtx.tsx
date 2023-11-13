@@ -13,14 +13,25 @@ import { getRoleFromToken } from "../utils/jwtUtils";
 import openApi from "../middleware/openApi";
 import { getCookie } from "../utils/cookieUtils";
 
+export type TypeUser = {
+  user_id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  edited_at: string;
+};
+
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
+  user: TypeUser;
 }
 
 export interface AuthContextType {
   login: (data: LoginData) => void;
   logout: () => void;
+  role: string | null;
+  user: TypeUser | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<string | null>(
     getRoleFromToken(getCookie("accessToken") || ""),
   );
+  const [user, setUser] = useState<TypeUser | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,6 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
     setRole(getRoleFromToken(data.accessToken));
+    setUser(data.user);
   };
 
   const logout = () => {
@@ -167,6 +180,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           login,
           logout,
           role,
+          user,
         } as AuthContextType
       }
     >
