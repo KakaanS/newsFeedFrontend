@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { getRoleFromToken } from "../utils/jwtUtils";
 import { getCookie } from "../utils/cookieUtils";
+import { isAccessTokenValid, refreshAccessToken } from "../utils/AuthHelper";
 
 export interface LoginData {
   accessToken: string;
@@ -25,7 +26,7 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie, removeCookie] = useCookies([
     "accessToken",
     "refreshToken",
   ]);
@@ -51,10 +52,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    isAccessTokenValid(cookies.accessToken)
+      .then((res) => {
+        if (res === false) {
+          refreshAccessToken(cookies.refreshToken)
+            .then((newToken) => {
+              if (newToken) {
+                setCookie("accessToken", newToken);
+                setRole(getRoleFromToken(newToken));
+              }
+            })
+            .catch((err) => {
+              logout();
+            });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cookies.accessToken, cookies.refreshToken]);
+
+  useEffect(() => {
     if (location.pathname === "/adminpanel") {
       if (role !== "admin") {
         console.log("redirecting to /");
-        navigate("/login");
+        navigate("/");
       }
     }
   }, [navigate, location.pathname, role]);
