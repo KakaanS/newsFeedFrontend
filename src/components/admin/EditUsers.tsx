@@ -25,7 +25,7 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
   const { user } = useAuth() as AuthContextType;
-  const activeUserId = user?.user_id;
+  const activeUserId = user?.user_id as string;
 
   const getUsers = async () => {
     try {
@@ -82,6 +82,7 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
                 user={user}
                 handleUpdateUsers={handleUpdateUsers}
                 activeUser={activeUserId === user.user_id}
+                activeUserId={activeUserId}
               />
             )
           ),

@@ -6,9 +6,15 @@ interface UserProps {
   user: TypeUser;
   handleUpdateUsers: () => void;
   activeUser: boolean;
+  activeUserId: string;
 }
 
-const User: React.FC<UserProps> = ({ user, handleUpdateUsers, activeUser }) => {
+const User: React.FC<UserProps> = ({
+  user,
+  handleUpdateUsers,
+  activeUser,
+  activeUserId,
+}) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -21,6 +27,10 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers, activeUser }) => {
   }, [handleUpdateUsers]);
 
   const changeRole = async (userId: string, roleToSet: string) => {
+    if (activeUserId === userId) {
+      console.log("You can't change your own role");
+      return;
+    }
     try {
       const response = await api.put("/users/setRoles", {
         userId,
@@ -28,8 +38,6 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers, activeUser }) => {
       });
       if (response.status === 200) {
         setIsAdmin(!isAdmin);
-        const data = response.data;
-        console.log("Role changed", data);
       } else {
         console.error("Change Role failed", response);
       }
@@ -39,6 +47,10 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers, activeUser }) => {
   };
 
   const deleteUser = async (userId: string) => {
+    if (activeUserId === userId) {
+      console.log("You can't delete yourself");
+      return;
+    }
     try {
       const response = await api.delete("/users/delete", {
         data: { userId },
