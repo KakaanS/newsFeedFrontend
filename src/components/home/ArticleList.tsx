@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../middleware/api";
-import { useAuth } from "../../context/AuthCtx";
 
 interface Article {
   id: string;
@@ -32,27 +31,21 @@ const ArticleComponent: React.FC<Props> = ({ article }) => {
 
 const ArticleList: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
-  const { accessToken } = useAuth() as { accessToken: string };
+
+  const getNews = async () => {
+    await api
+      .get("/news/getAll")
+      .then((response) => {
+        setArticles(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching articles", error);
+      });
+  };
 
   useEffect(() => {
-    if (!accessToken) return;
-    const getNews = async () => {
-      const config = {
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      };
-      await api
-        .get("/news/getAll", config)
-        .then((response) => {
-          setArticles(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching articles", error);
-        });
-    };
     getNews();
-  }, [accessToken]);
+  }, []);
 
   return (
     <div>

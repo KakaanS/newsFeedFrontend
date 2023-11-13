@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import api from "../../middleware/api";
-import { useAuth } from "../../context/AuthCtx";
 import "./admin.css";
 
 type TypeUser = {
@@ -14,41 +13,29 @@ const EditUsers = () => {
   const [users, setUsers] = useState([]);
   const [updateUsers, setUpdateUsers] = useState(false);
 
-  const { accessToken } = useAuth() as { accessToken: string };
-
-  useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const response = await api.get("/users/getAll", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.status === 200) {
-          const data = response.data;
-          console.log("Users", data);
-          setUsers(data);
-        } else {
-          console.error("Get Users failed", response);
-        }
-      } catch (error) {
-        console.error(error, "Something went wrong");
+  const getUsers = async () => {
+    try {
+      const response = await api.get("/users/getAll");
+      if (response.status === 200) {
+        const data = response.data;
+        setUsers(data);
+      } else {
+        console.error("Get Users failed", response);
       }
-    };
+    } catch (error) {
+      console.error(error, "Something went wrong");
+    }
+  };
+  useEffect(() => {
     getUsers();
-  }, [accessToken, updateUsers]);
+  }, []);
 
   const changeRole = async (userId: string, roleToSet: string) => {
     try {
-      const response = await api.put(
-        "/users/setRoles",
-        { userId, roleName: roleToSet },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await api.put("/users/setRoles", {
+        userId,
+        roleName: roleToSet,
+      });
       if (response.status === 200) {
         const data = response.data;
         console.log("Role changed", data);
@@ -64,6 +51,7 @@ const EditUsers = () => {
     const [roleToSet, setRoleToSet] = useState(user.role_name);
 
     useEffect(() => {
+      console.log(roleToSet);
       toggleRole();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -92,6 +80,7 @@ const EditUsers = () => {
             onClick={() => {
               changeRole(user.user_id, roleToSet);
               setUpdateUsers(!updateUsers);
+              toggleRole();
             }}
           >
             Save

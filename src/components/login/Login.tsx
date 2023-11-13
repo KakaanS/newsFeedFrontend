@@ -3,13 +3,10 @@ import React, { useState } from "react";
 
 //Content
 import ForgotPassword from "./ForgotPassword";
-import { useAuth, LoginData } from "../../context/AuthCtx";
-import api from "../../middleware/api";
-import "./login.css";
 
-interface AuthContextType {
-  login: (data: LoginData) => void;
-}
+import "./login.css";
+import { AuthContextType, useAuth } from "../../context/AuthCtx";
+import openApi from "../../middleware/openApi";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -25,11 +22,9 @@ const Login: React.FC = () => {
     };
 
     try {
-      const { data, status } = await api.post("/identity/login", userData);
+      const { data, status } = await openApi.post("/identity/login", userData);
       if (status === 200) {
         login(data);
-      } else {
-        console.error("login failed");
       }
     } catch (error) {
       console.error(error, "Something went wrong");

@@ -2,8 +2,7 @@
 import { useState } from "react";
 
 //Content
-
-import { useAuth } from "../../context/AuthCtx";
+import "./admin.css";
 import api from "../../middleware/api";
 
 const InviteUsers = () => {
@@ -11,23 +10,16 @@ const InviteUsers = () => {
   const [name, setName] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
   const [error, setError] = useState("");
-  const { accessToken } = useAuth() as { accessToken: string };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
       email,
       name,
     };
-    const headers = {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${accessToken}`,
-    };
 
     try {
-      const { status } = await api.post("/identity/invite", userData, {
-        headers,
-      });
+      const { status } = await api.post("/identity/invite", userData);
       if (status === 200) {
         setInvitationSent(true);
         setError("");
@@ -45,7 +37,7 @@ const InviteUsers = () => {
   return (
     <div className="inviteUsersContainer">
       <h3>Invite New User To Newsfeed</h3>
-      <form className="inviteFormContainer" onSubmit={handleLogin}>
+      <form className="inviteFormContainer" onSubmit={handleInvite}>
         <div className="inviteForm">
           <label>
             Email:
