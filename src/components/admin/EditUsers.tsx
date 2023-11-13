@@ -26,7 +26,9 @@ const EditUsers = () => {
       console.error(error, "Something went wrong");
     }
   };
+
   useEffect(() => {
+    console.log("fetching users");
     getUsers();
   }, []);
 
