@@ -68,7 +68,7 @@
 }
 
 .username {
-  width: 130px;
+  width: 90px;
   margin: 5px;
 }
 .email {
@@ -76,10 +76,14 @@
   margin: 5px;
 }
 .role {
-  width: 80px;
+  width: 70px;
   margin: 5px;
 }
 .changeRole {
-  width: 300px;
+  width: 250px;
+  margin: 5px;
+}
+.deleteUser {
+  width: 80px;
   margin: 5px;
 }

@@ -27,6 +27,23 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
       console.error(error, "Something went wrong");
     }
   };
+
+  const deleteUser = async (userId: string) => {
+    try {
+      const response = await api.delete("/users/delete", {
+        data: { userId },
+      });
+      if (response.status === 200) {
+        const data = response.data;
+        console.log("User deleted", data);
+      } else {
+        console.error("Delete user failed", response);
+      }
+    } catch (error) {
+      console.error(error, "Something went wrong");
+    }
+  };
+
   const getRoleText = (inverted: boolean) => {
     if (inverted) {
       if (isAdmin) {
@@ -54,7 +71,7 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
       <p className="role">{getRoleText(false)}</p>
       <div className="changeRole">
         <button onClick={toggleRole} className="buttonInUsers">
-          Change Role To {`->`} {getRoleText(true)}
+          Change To: {getRoleText(true)}
         </button>
         <button
           className="buttonInUsers"
@@ -64,6 +81,17 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
           }}
         >
           Save
+        </button>
+      </div>
+      <div className="deleteUser">
+        <button
+          className="buttonInUsers"
+          onClick={() => {
+            deleteUser(user.user_id);
+            handleUpdateUsers();
+          }}
+        >
+          Delete
         </button>
       </div>
     </div>

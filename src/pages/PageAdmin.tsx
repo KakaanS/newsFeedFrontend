@@ -1,5 +1,5 @@
 //Tools
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 //Content
@@ -27,6 +27,12 @@ const PageAdmin = () => {
   const { adminView, updateAdminView } =
     useLocationContext() as LocationContextType;
 
+  const [updateUsers, setUpdateUsers] = useState(false);
+
+  const handleUpdateUsers = () => {
+    setUpdateUsers(!updateUsers);
+  };
+
   const searchParams = new URLSearchParams(location.search);
   const adminviewParam = searchParams.get("adminview");
 
@@ -48,8 +54,12 @@ const PageAdmin = () => {
             <div className="titleContainer">
               <h1>Admin Panel</h1>
             </div>
-            {role === "admin" && <InviteUsers />}
-            {role === "admin" && <EditUsers />}
+            {role === "admin" && (
+              <InviteUsers handleUpdateUsers={handleUpdateUsers} />
+            )}
+            {role === "admin" && (
+              <EditUsers handleUpdateUsers={handleUpdateUsers} />
+            )}
           </div>
         </div>
       );

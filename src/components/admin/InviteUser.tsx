@@ -5,7 +5,11 @@ import { useState } from "react";
 import "./admin.css";
 import api from "../../middleware/api";
 
-const InviteUsers = () => {
+interface InviteUsersProps {
+  handleUpdateUsers: () => void;
+}
+
+const InviteUsers: React.FC<InviteUsersProps> = ({ handleUpdateUsers }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
@@ -23,9 +27,12 @@ const InviteUsers = () => {
       if (status === 200) {
         setInvitationSent(true);
         setError("");
+        setEmail("");
+        setName("");
       } else {
         console.error("login failed");
       }
+      handleUpdateUsers();
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorMessages = error.response.data.error;
