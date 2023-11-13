@@ -28,7 +28,6 @@ const EditUsers = () => {
   };
   useEffect(() => {
     getUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeRole = async (userId: string, roleToSet: string) => {
