@@ -11,7 +11,7 @@ type TypeUser = {
 
 const EditUsers = () => {
   const [users, setUsers] = useState([]);
-  const [roleToSet, setRoleToSet] = useState<"admin" | "user">("user");
+  const [updateUsers, setUpdateUsers] = useState(false);
 
   const getUsers = async () => {
     try {
@@ -31,7 +31,7 @@ const EditUsers = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const changeRole = async (userId: string) => {
+  const changeRole = async (userId: string, roleToSet: string) => {
     try {
       const response = await api.put("/users/setRoles", {
         userId,
@@ -49,23 +49,56 @@ const EditUsers = () => {
   };
 
   const User = (user: TypeUser) => {
+    const [roleToSet, setRoleToSet] = useState(user.role_name);
+
+    useEffect(() => {
+      toggleRole();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const toggleRole = () => {
+      if (roleToSet === "admin") {
+        setRoleToSet("user");
+      } else if (roleToSet === "user") {
+        setRoleToSet("admin");
+      } else {
+        setRoleToSet("user");
+      }
+    };
+
     return (
-      <div className="inviteUsersContainer">
-        <p>{user.username}</p>
-        <p>{user.email}</p>
-        <p>{user.role_name}</p>
-        <button onClick={() => changeRole(user.user_id)}>Change Role</button>
+      <div className="users">
+        <p className="username">{user.username}</p>
+        <p className="email">{user.email}</p>
+        <p className="role">{user.role_name}</p>
+        <div className="changeRole">
+          <button onClick={toggleRole} className="buttonInUsers">
+            Change Role To {`->`} {roleToSet}
+          </button>
+          <button
+            className="buttonInUsers"
+            onClick={() => {
+              changeRole(user.user_id, roleToSet);
+              setUpdateUsers(!updateUsers);
+            }}
+          >
+            Save
+          </button>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="inviteUsersContainer">
-      <h2>Edit Users</h2>
-      <h4>Roletoset: {roleToSet}</h4>
+    <div className="editUsersContainer">
+      <h2> Users</h2>
 
-      <button onClick={() => setRoleToSet("admin")}>Admin</button>
-      <button onClick={() => setRoleToSet("user")}>User</button>
+      <div className="usersHeader">
+        <p className="username">Username</p>
+        <p className="email">Email</p>
+        <p className="role">Role</p>
+        <p className="changeRole">Change Role</p>
+      </div>
       {users.map((user: TypeUser) => (
         <User key={user.user_id} {...user} />
       ))}

@@ -54,7 +54,17 @@ const PageAdmin = () => {
         </div>
       );
     case "Add New Article":
-      return <AddArticle />;
+      return (
+        <div className="adminPageContainer">
+          <Navbar logout={logout} />
+          <div className="adminContainer">
+            <div className="titleContainer">
+              <h1>Admin Panel</h1>
+            </div>
+            {role === "admin" && <AddArticle />}
+          </div>
+        </div>
+      );
     default:
       return <p>Something went wrong</p>;
   }
