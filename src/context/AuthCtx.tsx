@@ -10,7 +10,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { getRoleFromToken } from "../utils/jwtUtils";
 import { getCookie } from "../utils/cookieUtils";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export interface LoginData {
   accessToken: string;
