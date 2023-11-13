@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../middleware/api";
 import { TypeUser } from "./EditUsers";
 
@@ -9,6 +9,15 @@ interface UserProps {
 
 const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
   const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user.role_name === "admin") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleUpdateUsers]);
 
   const changeRole = async (userId: string, roleToSet: string) => {
     try {
@@ -60,19 +69,13 @@ const User: React.FC<UserProps> = ({ user, handleUpdateUsers }) => {
     }
   };
 
-  const toggleRole = () => {
-    setIsAdmin(!isAdmin);
-  };
-
   return (
     <div className="users" key={user.user_id}>
       <p className="username">{user.username}</p>
       <p className="email">{user.email}</p>
       <p className="role">{getRoleText(false)}</p>
       <div className="changeRole">
-        <button onClick={toggleRole} className="buttonInUsers">
-          Change To: {getRoleText(true)}
-        </button>
+        <p className="changeTo">Change To: {getRoleText(true)}</p>
         <button
           className="buttonInUsers"
           onClick={() => {

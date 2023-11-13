@@ -63,7 +63,7 @@
 }
 
 .buttonInUsers {
-  margin: 0 2px;
+  margin: 5px;
   padding: 0 10px;
 }
 
@@ -79,11 +79,17 @@
   width: 70px;
   margin: 5px;
 }
+.changeTo {
+  margin: 5px;
+}
 .changeRole {
+  display: flex;
+  flex-direction: row;
   width: 250px;
   margin: 5px;
 }
 .deleteUser {
+  display: flex;
   width: 80px;
   margin: 5px;
 }
