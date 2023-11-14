@@ -35,37 +35,43 @@ const Login: React.FC = () => {
     setShowForgotPassword(true);
   };
 
-  return (
-    <div className="loginMasterContainer">
-      <h1>Newsfeed Login</h1>
-      <div className="loginContainer">
-        <form className="loginForm" onSubmit={handleLogin}>
-          <label>
-            <p> Email:</p>
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label>
-            <p> Password:</p>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-      <button onClick={handleForgotPasswordClick}>Forgot Password</button>
-      <ForgotPassword
-        show={showForgotPassword}
-        setShow={setShowForgotPassword}
-      />
-    </div>
-  );
+  switch (showForgotPassword) {
+    case true:
+      return (
+        <ForgotPassword
+          show={showForgotPassword}
+          setShow={setShowForgotPassword}
+        />
+      );
+    case false:
+      return (
+        <div className="loginMasterContainer">
+          <h1>Newsfeed Login</h1>
+          <div className="loginContainer">
+            <form className="loginForm" onSubmit={handleLogin}>
+              <label>
+                <p> Email:</p>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </label>
+              <label>
+                <p> Password:</p>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+          <button onClick={handleForgotPasswordClick}>Forgot Password</button>
+        </div>
+      );
+  }
 };
 
 export default Login;
