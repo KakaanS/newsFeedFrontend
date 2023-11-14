@@ -8,7 +8,7 @@ import {
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { getRoleFromToken } from "../utils/jwtUtils";
+import { getRoleFromToken, getUserIdFromToken } from "../utils/jwtUtils";
 import { getCookie } from "../utils/cookieUtils";
 import { isAccessTokenValid, refreshAccessToken } from "../utils/AuthHelper";
 
@@ -30,7 +30,7 @@ export interface AuthContextType {
   login: (data: LoginData) => void;
   logout: () => void;
   role: string | null;
-  user: TypeUser | null;
+  userId: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<string | null>(
     getRoleFromToken(getCookie("accessToken") || ""),
   );
-  const [user, setUser] = useState<TypeUser | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCookie("refreshToken", data.refreshToken);
     navigate("/");
     setRole(getRoleFromToken(data.accessToken));
-    setUser(data.user);
+    setUserId(data.user.user_id);
   };
 
   const logout = () => {
@@ -66,6 +66,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     isAccessTokenValid(cookies.accessToken)
       .then((res) => {
+        setUserId(getUserIdFromToken(cookies.accessToken));
+
         if (res === false) {
           refreshAccessToken(cookies.refreshToken)
             .then((newToken) => {
@@ -101,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           login,
           logout,
           role,
-          user,
+          userId,
         } as AuthContextType
       }
     >

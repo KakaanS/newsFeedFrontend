@@ -24,8 +24,8 @@ export type TypeInvitedUser = {
 const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
-  const { user } = useAuth() as AuthContextType;
-  const activeUserId = user?.user_id as string;
+  const { userId } = useAuth() as AuthContextType;
+  const activeUserId = userId as string;
 
   const getUsers = async () => {
     try {
