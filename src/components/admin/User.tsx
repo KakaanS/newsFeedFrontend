@@ -5,6 +5,7 @@ import { TypeUser } from "./EditUsers";
 interface UserProps {
   user: TypeUser;
   handleUpdateUsers: () => void;
+  handleUsersWhenDeleted: (userId: string) => void;
   activeUser: boolean;
   activeUserId: string;
 }
@@ -12,6 +13,7 @@ interface UserProps {
 const User: React.FC<UserProps> = ({
   user,
   handleUpdateUsers,
+  handleUsersWhenDeleted,
   activeUser,
   activeUserId,
 }) => {
@@ -57,6 +59,7 @@ const User: React.FC<UserProps> = ({
       });
       if (response.status === 200) {
         const data = response.data;
+        handleUsersWhenDeleted(userId);
         handleUpdateUsers();
         console.log("User deleted", data);
       } else {

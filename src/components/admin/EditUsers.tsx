@@ -58,6 +58,12 @@ const EditUsers: React.FC<EditUsersProps> = ({
       console.error(error, "Something went wrong");
     }
   };
+  const handleUsersWhenDeleted = (userId: string) => {
+    const index = users.findIndex((user: TypeUser) => user.user_id === userId);
+    const newUsers = [...users];
+    newUsers.splice(index, 1);
+    setUsers(newUsers);
+  };
 
   useEffect(() => {
     getUsers();
@@ -83,6 +89,7 @@ const EditUsers: React.FC<EditUsersProps> = ({
             handleUpdateUsers={handleUpdateUsers}
             activeUser={activeUserId === user.user_id}
             activeUserId={activeUserId}
+            handleUsersWhenDeleted={handleUsersWhenDeleted}
           />
         ))}
       </div>
