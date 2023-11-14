@@ -6,7 +6,7 @@ interface Article {
   title: string;
   link: string;
   content: string;
-  createdAt: Date;
+  created_at: Date;
 }
 
 interface Props {
@@ -15,7 +15,6 @@ interface Props {
 
 const ArticleComponent: React.FC<Props> = ({ article }) => {
   const linkExists = article.link !== "";
-  console.log(article, "article");
   return (
     <div className="articleItem">
       <h2>{article.title}</h2>
@@ -39,7 +38,12 @@ const ArticleList: React.FC = () => {
     await api
       .get("/news/getAll")
       .then((response) => {
-        setArticles(response.data);
+        const articlesResponse: Article[] = response.data;
+        articlesResponse.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
+        setArticles(articlesResponse);
       })
       .catch((error) => {
         console.error("Error fetching articles", error);
