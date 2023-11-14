@@ -1,18 +1,22 @@
 import { useState } from "react";
 
 import checkPassword from "../../utils/passwordCheck";
-import api from "../../middleware/api";
+import openApi from "../../middleware/openApi";
+
+import "../register/register.css";
+import "../login/login.css";
 
 interface ResetPasswordProps {
   setResetPasswordView: React.Dispatch<React.SetStateAction<string>>;
   resetPasswordToken: string | null;
+  email: string | null;
 }
 
 const ReseetPassword: React.FC<ResetPasswordProps> = ({
   resetPasswordToken,
   setResetPasswordView,
+  email,
 }) => {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordStongEnough, setPasswordStongEnough] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -24,12 +28,11 @@ const ReseetPassword: React.FC<ResetPasswordProps> = ({
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const userData = {
-      email,
       password,
     };
-
+    console.log("resetPasswordToken", resetPasswordToken);
     try {
-      const response = await api.put("/identity/resetPassword", userData, {
+      const response = await openApi.put("/identity/resetPassword", userData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${resetPasswordToken}`,
@@ -65,47 +68,46 @@ const ReseetPassword: React.FC<ResetPasswordProps> = ({
   };
 
   return (
-    <div>
-      <h1>Reset Password</h1>
-      <form onSubmit={handleResetPassword}>
-        <label>
-          Email:
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Reset Password</h1>
+      <div className="loginContainer">
+        <form className="registerForm" onSubmit={handleResetPassword}>
+          <label>
+            <p>Email: </p>
+            <input type="text" value={email as string} disabled />
+          </label>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              checkPassword(e.target.value, setPasswordStongEnough);
-            }}
-          />
-        </label>
-        <PasswordStrength />
-        <label>
-          Confirm Password:
-          <input
-            type="password"
-            value={passwordConfirm}
-            onChange={(e) => {
-              setPasswordConfirm(e.target.value);
-              setPasswordMatch(password === e.target.value);
-            }}
-          />
-        </label>
-        <PasswordMatch />
-        <button type="submit" disabled={!passwordMatch}>
-          Reset Password
-        </button>
-        <ErrorResetPassword />
-      </form>
+          <label>
+            <p>Password:</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                checkPassword(e.target.value, setPasswordStongEnough);
+              }}
+            />
+          </label>
+          <PasswordStrength />
+          <label>
+            <p> Confirm Password:</p>
+            <input
+              type="password"
+              value={passwordConfirm}
+              onChange={(e) => {
+                setPasswordConfirm(e.target.value);
+                setPasswordMatch(password === e.target.value);
+              }}
+            />
+          </label>
+          <PasswordMatch />
+          <button type="submit" disabled={!passwordMatch}>
+            Reset Password
+          </button>
+          <ErrorResetPassword />
+        </form>
+      </div>
+      <button onClick={() => setResetPasswordView("Login")}>Close</button>
     </div>
   );
 };

@@ -14,9 +14,14 @@ const ResetPasswordTokenExpired: React.FC<ResetPasswordProps> = ({
     navigate("/login");
   };
   return (
-    <div>
-      <div>Reset Password Link Expired to send new link go to login page </div>
-      <button onClick={onClick}>Close</button>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Reset Password</h1>
+      <div className="loginContainer">
+        <div className="registerTokenExpired">
+          <p>Reset Password Link Expired to send new link go to login page </p>
+          <button onClick={onClick}>Close</button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -13,6 +13,7 @@ const PageResetPassword = () => {
 
   const searchParams = new URLSearchParams(location.search);
   const resetPasswordToken = searchParams.get("resetPasswordToken");
+  const email = searchParams.get("email");
 
   useEffect(() => {
     if (!resetPasswordToken) {
@@ -51,6 +52,7 @@ const PageResetPassword = () => {
         <ReseetPassword
           setResetPasswordView={setResetPasswordView}
           resetPasswordToken={resetPasswordToken}
+          email={email}
         />
       );
     case "Password Reset Succeeded":
@@ -63,6 +65,8 @@ const PageResetPassword = () => {
           setResetPasswordView={setResetPasswordView}
         />
       );
+    case "Login":
+      return <>{navigate("/login")}</>;
     default:
       return (
         <ResetPasswordTokenExpired

@@ -14,9 +14,14 @@ const ResetPasswordSucceeded: React.FC<ResetPasswordProps> = ({
     navigate("/login");
   };
   return (
-    <div>
-      <div>Password reset succeeded</div>
-      <button onClick={onClick}>Close</button>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Reset Password</h1>
+      <div className="loginContainer">
+        <div className="registerTokenExpired">
+          <p>Reset Password Succeeded</p>
+          <button onClick={onClick}>Close</button>
+        </div>
+      </div>
     </div>
   );
 };
