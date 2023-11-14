@@ -5,6 +5,7 @@ import User from "./User";
 import InvitedUsers from "./InvitedUsers";
 import { AuthContextType, useAuth } from "../../context/AuthCtx";
 interface EditUsersProps {
+  updateUsers: boolean;
   handleUpdateUsers: () => void;
 }
 
@@ -21,7 +22,10 @@ export type TypeInvitedUser = {
   email: string;
 };
 
-const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
+const EditUsers: React.FC<EditUsersProps> = ({
+  updateUsers,
+  handleUpdateUsers,
+}) => {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
   const { userId } = useAuth() as AuthContextType;
@@ -54,12 +58,17 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
       console.error(error, "Something went wrong");
     }
   };
+  const handleUsersWhenDeleted = (userId: string) => {
+    const index = users.findIndex((user: TypeUser) => user.user_id === userId);
+    const newUsers = [...users];
+    newUsers.splice(index, 1);
+    setUsers(newUsers);
+  };
 
   useEffect(() => {
-    console.log("useEffect get users");
     getUsers();
     getInvitedUsers();
-  }, [handleUpdateUsers]);
+  }, [updateUsers]);
 
   return (
     <>
@@ -80,6 +89,7 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
             handleUpdateUsers={handleUpdateUsers}
             activeUser={activeUserId === user.user_id}
             activeUserId={activeUserId}
+            handleUsersWhenDeleted={handleUsersWhenDeleted}
           />
         ))}
       </div>

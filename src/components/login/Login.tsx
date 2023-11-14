@@ -11,6 +11,7 @@ import openApi from "../../middleware/openApi";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setErrors] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { login } = useAuth() as AuthContextType;
 
@@ -26,45 +27,62 @@ const Login: React.FC = () => {
       if (status === 200) {
         login(data);
       }
-    } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setErrors(error.response.data.error);
       console.error(error, "Something went wrong");
     }
+    setPassword("");
   };
 
   const handleForgotPasswordClick = () => {
     setShowForgotPassword(true);
   };
 
-  return (
-    <div className="loginMasterContainer">
-      <div className="loginContainer">
-        <form onSubmit={handleLogin}>
-          <label>
-            Email:
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label>
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-          <button type="submit">Login</button>
-        </form>
-        <button onClick={handleForgotPasswordClick}>Forgot Password</button>
+  switch (showForgotPassword) {
+    case true:
+      return (
         <ForgotPassword
           show={showForgotPassword}
           setShow={setShowForgotPassword}
         />
-      </div>
-    </div>
-  );
+      );
+    case false:
+      return (
+        <div className="loginMasterContainer">
+          <h1>Newsfeed Login</h1>
+          <div className="loginContainer">
+            <form className="loginForm" onSubmit={handleLogin}>
+              <label>
+                <p> Email:</p>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors("");
+                  }}
+                />
+              </label>
+              <label>
+                <p> Password:</p>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors("");
+                  }}
+                />
+              </label>
+              <p>{error}</p>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+          <button onClick={handleForgotPasswordClick}>Forgot Password</button>
+        </div>
+      );
+  }
 };
 
 export default Login;

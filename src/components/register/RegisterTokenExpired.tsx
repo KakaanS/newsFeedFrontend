@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
+import "../login/login.css";
+import "./register.css";
+
 interface RegisterProps {
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -12,9 +15,14 @@ const RegisterTokenExpired: React.FC<RegisterProps> = ({ setRegisterView }) => {
     navigate("/login");
   };
   return (
-    <div>
-      <div>Register Link Expired please ask Admin for a new link </div>
-      <button onClick={onClick}>Close</button>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Register</h1>
+      <div className="loginContainer">
+        <div className="registerTokenExpired">
+          <p>Register Link Expired please ask Admin for a new link </p>
+          <button onClick={onClick}>Close</button>
+        </div>
+      </div>
     </div>
   );
 };
