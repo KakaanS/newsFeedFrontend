@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import api from "../../middleware/api";
 import "./admin.css";
 import User from "./User";
+import InvitedUsers from "./InvitedUsers";
+import { AuthContextType, useAuth } from "../../context/AuthCtx";
+interface EditUsersProps {
+  handleUpdateUsers: () => void;
+}
 
 export type TypeUser = {
   user_id: string;
@@ -10,13 +15,17 @@ export type TypeUser = {
   role_name: string;
 };
 
-const EditUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [updateUsers, setUpdateUsers] = useState(false);
+export type TypeInvitedUser = {
+  invitedUser_id: string;
+  name: string;
+  email: string;
+};
 
-  const handleUpdateUsers = () => {
-    setUpdateUsers(!updateUsers);
-  };
+const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
+  const [users, setUsers] = useState([]);
+  const [invitedUsers, setInvitedUsers] = useState([]);
+  const { user } = useAuth() as AuthContextType;
+  const activeUserId = user?.user_id as string;
 
   const getUsers = async () => {
     try {
@@ -32,30 +41,65 @@ const EditUsers = () => {
     }
   };
 
+  const getInvitedUsers = async () => {
+    try {
+      const response = await api.get("/identity/invite");
+      if (response.status === 200) {
+        const data = response.data;
+        setInvitedUsers(data);
+      } else {
+        console.error("Get Invited Users failed", response);
+      }
+    } catch (error) {
+      console.error(error, "Something went wrong");
+    }
+  };
+
   useEffect(() => {
     console.log("useEffect get users");
-    console.log("UpdateUsers", updateUsers);
     getUsers();
-  }, [updateUsers]);
+    getInvitedUsers();
+  }, [handleUpdateUsers]);
 
   return (
-    <div className="editUsersContainer">
-      <h2> Users</h2>
+    <>
+      <div className="editUsersContainer">
+        <h2> Users</h2>
 
-      <div className="usersHeader">
-        <p className="username">Username</p>
-        <p className="email">Email</p>
-        <p className="role">Role</p>
-        <p className="changeRole">Change Role</p>
+        <div className="usersHeader">
+          <p className="username">Username</p>
+          <p className="email">Email</p>
+          <p className="role">Role</p>
+          <p className="changeRole">Change Role</p>
+          <p className="deleteUser">Delete</p>
+        </div>
+        {users.map((user: TypeUser) => (
+          <User
+            key={user.user_id}
+            user={user}
+            handleUpdateUsers={handleUpdateUsers}
+            activeUser={activeUserId === user.user_id}
+            activeUserId={activeUserId}
+          />
+        ))}
       </div>
-      {users.map((user: TypeUser) => (
-        <User
-          key={user.user_id}
-          user={user}
-          handleUpdateUsers={handleUpdateUsers}
-        />
-      ))}
-    </div>
+      <div className="editUsersContainer">
+        <h2> Invited Users</h2>
+
+        <div className="usersHeader">
+          <p className="username">Name</p>
+          <p className="email">Email</p>
+          <p className="changeRole">Delete</p>
+        </div>
+        {invitedUsers.map((user: TypeInvitedUser) => (
+          <InvitedUsers
+            key={user.invitedUser_id}
+            user={user}
+            handleUpdateUsers={handleUpdateUsers}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 

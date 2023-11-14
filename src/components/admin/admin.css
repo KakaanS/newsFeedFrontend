@@ -63,12 +63,12 @@
 }
 
 .buttonInUsers {
-  margin: 0 2px;
+  margin: 5px;
   padding: 0 10px;
 }
 
 .username {
-  width: 130px;
+  width: 90px;
   margin: 5px;
 }
 .email {
@@ -76,10 +76,20 @@
   margin: 5px;
 }
 .role {
-  width: 80px;
+  width: 70px;
+  margin: 5px;
+}
+.changeTo {
   margin: 5px;
 }
 .changeRole {
-  width: 300px;
+  display: flex;
+  flex-direction: row;
+  width: 250px;
+  margin: 5px;
+}
+.deleteUser {
+  display: flex;
+  width: 80px;
   margin: 5px;
 }
