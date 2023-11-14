@@ -14,17 +14,20 @@ interface Props {
 }
 
 const ArticleComponent: React.FC<Props> = ({ article }) => {
+  const linkExists = article.link !== "";
+  console.log(article, "article");
   return (
     <div className="articleItem">
       <h2>{article.title}</h2>
-      <iframe
-        width="700"
-        height="450"
-        src={article.link}
-        allowFullScreen
-      ></iframe>
+      {linkExists ? (
+        <iframe
+          width="400"
+          height="280"
+          src={article.link}
+          allowFullScreen
+        ></iframe>
+      ) : null}
       <p>{article.content}</p>
-      <p>{article.createdAt && <p>{article.createdAt.toLocaleString()}</p>}</p>
     </div>
   );
 };
@@ -44,12 +47,11 @@ const ArticleList: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("fetching news");
     getNews();
   }, []);
 
   return (
-    <div>
+    <div className="feed">
       {articles.map((article) => (
         <ArticleComponent key={article.id} article={article} />
       ))}

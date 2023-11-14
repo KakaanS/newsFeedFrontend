@@ -1,6 +1,8 @@
-.newsfeed {
+.homePageContainer {
   display: flex;
-  flex-direction: column;
+  padding: 15px;
+  flex-direction: row;
+  margin: 20px;
 }
 .homeContainer {
   display: flex;
@@ -8,13 +10,7 @@
   height: 100%;
   width: 100%;
 }
-.homePageContainer {
-  display: flex;
-  padding: 15px;
-  flex-direction: row;
-  margin: 20px;
-}
-.articleItem {
+.newsfeed {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,4 +20,26 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #3b3a3a;
+  border-radius: 20px;
+  max-width: 800px;
+  padding: 10px;
+}
+.articleItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #24242471;
+  border: 2px solid black;
+  border-radius: 20px;
+  max-width: 720px;
+  width: 80%;
+  margin: 30px;
+  padding: 35px;
 }
