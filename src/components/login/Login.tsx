@@ -11,6 +11,7 @@ import openApi from "../../middleware/openApi";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setErrors] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { login } = useAuth() as AuthContextType;
 
@@ -26,9 +27,12 @@ const Login: React.FC = () => {
       if (status === 200) {
         login(data);
       }
-    } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setErrors(error.response.data.error);
       console.error(error, "Something went wrong");
     }
+    setPassword("");
   };
 
   const handleForgotPasswordClick = () => {
@@ -54,7 +58,10 @@ const Login: React.FC = () => {
                 <input
                   type="text"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors("");
+                  }}
                 />
               </label>
               <label>
@@ -62,9 +69,13 @@ const Login: React.FC = () => {
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors("");
+                  }}
                 />
               </label>
+              <p>{error}</p>
               <button type="submit">Login</button>
             </form>
           </div>

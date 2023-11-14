@@ -7,6 +7,7 @@ interface ForgotPasswordProps {
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ show, setShow }) => {
   const [email, setEmail] = useState("");
+  const [response, setResponse] = useState("");
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +27,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ show, setShow }) => {
       );
       if (response.ok) {
         const data = await response.json();
+        setResponse(data.message);
         console.log("Password reset email sent", data.message);
       } else {
         const errorData = await response.json();
@@ -49,7 +51,10 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ show, setShow }) => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-          <button type="submit">Reset Password</button>
+          <p>{response}</p>
+          {response === "" ? (
+            <button type="submit">Reset Password</button>
+          ) : null}
         </form>
       </div>
       <button onClick={() => setShow(!show)}>Close</button>
