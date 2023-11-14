@@ -3,6 +3,9 @@ import { useState } from "react";
 import checkPassword from "../../utils/passwordCheck";
 import openApi from "../../middleware/openApi";
 
+import "../login/login.css";
+import "./register.css";
+
 interface RegisterProps {
   email: string;
   setRegisterView: React.Dispatch<React.SetStateAction<string>>;
@@ -67,46 +70,52 @@ const Register: React.FC<RegisterProps> = ({
   };
 
   return (
-    <div>
-      <form onSubmit={handleRegister}>
-        <label>Email: {email}</label>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              checkPassword(e.target.value, setPasswordStongEnough);
-            }}
-          />
-        </label>
-        <PasswordStrength />
-        <label>
-          Confirm Password:
-          <input
-            type="password"
-            value={passwordConfirm}
-            onChange={(e) => {
-              setPasswordConfirm(e.target.value);
-              setPasswordMatch(password === e.target.value);
-            }}
-          />
-        </label>
-        <PasswordMatch />
-        <button type="submit" disabled={!passwordMatch}>
-          Register
-        </button>
-        <ErrorRegister />
-      </form>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Register</h1>
+      <div className="loginContainer">
+        <form className="registerForm" onSubmit={handleRegister}>
+          <label>
+            <p>Email:</p>
+            <input type="text" value={email} disabled />
+          </label>
+          <label>
+            <p>Username:</p>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </label>
+          <label>
+            <p>Password:</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                checkPassword(e.target.value, setPasswordStongEnough);
+              }}
+            />
+          </label>
+          <PasswordStrength />
+          <label>
+            <p>Confirm Password:</p>
+            <input
+              type="password"
+              value={passwordConfirm}
+              onChange={(e) => {
+                setPasswordConfirm(e.target.value);
+                setPasswordMatch(password === e.target.value);
+              }}
+            />
+          </label>
+          <PasswordMatch />
+          <button type="submit" disabled={!passwordMatch}>
+            Register
+          </button>
+          <ErrorRegister />
+        </form>
+      </div>
     </div>
   );
 };

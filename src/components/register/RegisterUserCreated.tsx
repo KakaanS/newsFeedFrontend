@@ -12,9 +12,14 @@ const RegisterUserCreated: React.FC<RegisterProps> = ({ setRegisterView }) => {
     navigate("/login");
   };
   return (
-    <div>
-      <div>Register User Created</div>
-      <button onClick={onClick}>Close</button>
+    <div className="loginMasterContainer">
+      <h1>Newsfeed Register</h1>
+      <div className="loginContainer">
+        <div className="registerTokenExpired">
+          <p>Register User Created</p>
+          <button onClick={onClick}>Close</button>
+        </div>
+      </div>
     </div>
   );
 };
