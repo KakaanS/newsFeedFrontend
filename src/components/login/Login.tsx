@@ -37,10 +37,11 @@ const Login: React.FC = () => {
 
   return (
     <div className="loginMasterContainer">
+      <h1>Newsfeed Login</h1>
       <div className="loginContainer">
-        <form onSubmit={handleLogin}>
+        <form className="loginForm" onSubmit={handleLogin}>
           <label>
-            Email:
+            <p> Email:</p>
             <input
               type="text"
               value={email}
@@ -48,7 +49,7 @@ const Login: React.FC = () => {
             />
           </label>
           <label>
-            Password:
+            <p> Password:</p>
             <input
               type="password"
               value={password}
@@ -57,12 +58,12 @@ const Login: React.FC = () => {
           </label>
           <button type="submit">Login</button>
         </form>
-        <button onClick={handleForgotPasswordClick}>Forgot Password</button>
-        <ForgotPassword
-          show={showForgotPassword}
-          setShow={setShowForgotPassword}
-        />
       </div>
+      <button onClick={handleForgotPasswordClick}>Forgot Password</button>
+      <ForgotPassword
+        show={showForgotPassword}
+        setShow={setShowForgotPassword}
+      />
     </div>
   );
 };
