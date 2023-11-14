@@ -73,20 +73,15 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
           <p className="changeRole">Change Role</p>
           <p className="deleteUser">Delete</p>
         </div>
-        {users.map(
-          (user: TypeUser) => (
-            console.log("user", user),
-            (
-              <User
-                key={user.user_id}
-                user={user}
-                handleUpdateUsers={handleUpdateUsers}
-                activeUser={activeUserId === user.user_id}
-                activeUserId={activeUserId}
-              />
-            )
-          ),
-        )}
+        {users.map((user: TypeUser) => (
+          <User
+            key={user.user_id}
+            user={user}
+            handleUpdateUsers={handleUpdateUsers}
+            activeUser={activeUserId === user.user_id}
+            activeUserId={activeUserId}
+          />
+        ))}
       </div>
       <div className="editUsersContainer">
         <h2> Invited Users</h2>
