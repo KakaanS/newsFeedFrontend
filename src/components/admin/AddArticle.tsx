@@ -29,7 +29,6 @@ const AddArticle: React.FC = () => {
 
     try {
       const response = await api.post("/news/create", formData);
-      console.log("API RESPONSE", response);
       if (response.status === 201) {
         updateAdminView("Admin Panel");
       } else {

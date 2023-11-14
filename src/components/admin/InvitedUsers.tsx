@@ -19,8 +19,7 @@ const InvitedUsers: React.FC<InvitedUserProps> = ({
         data: userData,
       });
       if (response.status === 200) {
-        const data = response.data;
-        console.log("Invited User Deleted", data);
+        return;
       } else {
         console.error("Deleted invite user Error", response);
       }

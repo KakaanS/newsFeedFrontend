@@ -68,18 +68,26 @@
 }
 
 .username {
+  display: flex;
+  align-items: center;
   width: 90px;
   margin: 5px;
 }
 .email {
+  display: flex;
+  align-items: center;
   width: 200px;
   margin: 5px;
 }
 .role {
+  display: flex;
+  align-items: center;
   width: 70px;
   margin: 5px;
 }
 .changeTo {
+  display: flex;
+  align-items: center;
   margin: 5px;
 }
 .changeRole {
@@ -90,6 +98,7 @@
 }
 .deleteUser {
   display: flex;
+  align-items: center;
   width: 80px;
   margin: 5px;
 }

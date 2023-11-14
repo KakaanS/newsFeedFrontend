@@ -58,10 +58,8 @@ const User: React.FC<UserProps> = ({
         data: { userId },
       });
       if (response.status === 200) {
-        const data = response.data;
         handleUsersWhenDeleted(userId);
         handleUpdateUsers();
-        console.log("User deleted", data);
       } else {
         console.error("Delete user failed", response);
       }
