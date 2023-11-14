@@ -58,7 +58,10 @@ const PageAdmin = () => {
               <InviteUsers handleUpdateUsers={handleUpdateUsers} />
             )}
             {role === "admin" && (
-              <EditUsers handleUpdateUsers={handleUpdateUsers} />
+              <EditUsers
+                updateUsers={updateUsers}
+                handleUpdateUsers={handleUpdateUsers}
+              />
             )}
           </div>
         </div>

@@ -5,6 +5,7 @@ import User from "./User";
 import InvitedUsers from "./InvitedUsers";
 import { AuthContextType, useAuth } from "../../context/AuthCtx";
 interface EditUsersProps {
+  updateUsers: boolean;
   handleUpdateUsers: () => void;
 }
 
@@ -21,7 +22,10 @@ export type TypeInvitedUser = {
   email: string;
 };
 
-const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
+const EditUsers: React.FC<EditUsersProps> = ({
+  updateUsers,
+  handleUpdateUsers,
+}) => {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
   const { userId } = useAuth() as AuthContextType;
@@ -56,10 +60,9 @@ const EditUsers: React.FC<EditUsersProps> = ({ handleUpdateUsers }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect get users");
     getUsers();
     getInvitedUsers();
-  }, [handleUpdateUsers]);
+  }, [updateUsers]);
 
   return (
     <>
