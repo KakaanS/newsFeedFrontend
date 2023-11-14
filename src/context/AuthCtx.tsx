@@ -90,7 +90,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (location.pathname === "/adminpanel") {
       if (role !== "admin") {
-        console.log("redirecting to /");
+        navigate("/");
+      }
+    } else if (
+      location.pathname !== "/login" &&
+      location.pathname !== "/register" &&
+      location.pathname !== "/resetPassword"
+    ) {
+      if (role !== "user" && role !== "admin") {
+        navigate("/login");
+      }
+    } else if (
+      location.pathname === "/login" ||
+      location.pathname === "/register" ||
+      location.pathname === "/resetPassword"
+    ) {
+      if (role === "user" || role === "admin") {
         navigate("/");
       }
     }
