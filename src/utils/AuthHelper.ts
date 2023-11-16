@@ -14,7 +14,10 @@ export const refreshAccessToken = async (
 
       if (response.status === 200) {
         const accessToken = response.data.accessToken;
-        return accessToken;
+        const isValid = await isAccessTokenValid(accessToken);
+        if (isValid) {
+          return accessToken;
+        }
       }
     } catch (error) {
       console.log(
