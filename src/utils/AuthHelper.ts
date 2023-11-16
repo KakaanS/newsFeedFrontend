@@ -14,13 +14,19 @@ export const refreshAccessToken = async (
 
       if (response.status === 200) {
         const accessToken = response.data.accessToken;
+<<<<<<< HEAD
         const isValid = await isAccessTokenValid(accessToken);
         if (isValid) {
           return accessToken;
         }
+=======
+        window.location.reload();
+        return accessToken;
+>>>>>>> ebcbf0271b3444c47b9304b246b3e84f278e15cf
       }
     } catch (error) {
       console.log(
+        window.location.reload(),
         "refreshAccessToken - not ok \n\t - ",
         (error as Error)?.message,
       );
