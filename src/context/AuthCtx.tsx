@@ -67,7 +67,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isAccessTokenValid(cookies.accessToken)
       .then((res) => {
         setUserId(getUserIdFromToken(cookies.accessToken));
-
         if (res === false) {
           refreshAccessToken(cookies.refreshToken)
             .then((newToken) => {
