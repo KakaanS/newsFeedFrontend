@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getRoleFromToken, getUserIdFromToken } from "../utils/jwtUtils";
 import { getCookie } from "../utils/cookieUtils";
 import { isAccessTokenValid, refreshAccessToken } from "../utils/AuthHelper";
+import api from "../middleware/api";
 
 export type TypeUser = {
   user_id: string;
@@ -56,7 +57,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserId(data.user.user_id);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await api.get("/identity/logout");
+
     removeCookie("refreshToken");
     removeCookie("accessToken");
     setRole(null);
