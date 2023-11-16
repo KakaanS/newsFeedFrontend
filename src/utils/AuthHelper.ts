@@ -14,10 +14,12 @@ export const refreshAccessToken = async (
 
       if (response.status === 200) {
         const accessToken = response.data.accessToken;
+        window.location.reload();
         return accessToken;
       }
     } catch (error) {
       console.log(
+        window.location.reload(),
         "refreshAccessToken - not ok \n\t - ",
         (error as Error)?.message,
       );
